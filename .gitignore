@@ -83,6 +83,7 @@ build
 .nuxt
 build
 dist
+dist-electron
 
 # Gatsby files
 .cache/
