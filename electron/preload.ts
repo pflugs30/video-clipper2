@@ -19,6 +19,8 @@ console.log("Preload script is running!");
 contextBridge.exposeInMainWorld("electronAPI", {
   /** Prompt the user to select a video file and return its path. */
   openVideo: (): Promise<string | null> => ipcRenderer.invoke("dialog:openVideo"),
+  /** Convert a local file path to a video URL that can be loaded in the renderer. */
+  getVideoURL: (filePath: string): Promise<string> => ipcRenderer.invoke("video:getURL", filePath),
   /** Prompt the user to choose an output directory and return its path. */
   chooseOutputDir: (): Promise<string | null> => ipcRenderer.invoke("dialog:chooseOutputDir"),
   /** Trigger an export operation for a clip. */

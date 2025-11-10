@@ -1,7 +1,8 @@
-import { app, BrowserWindow, ipcMain, dialog } from "electron";
+import { app, BrowserWindow, ipcMain, dialog, protocol } from "electron";
 import path from "path";
 import { fileURLToPath } from "url";
 import { spawn } from "child_process";
+import fs from "fs";
 
 // ES module equivalent of __dirname
 const __filename = fileURLToPath(import.meta.url);
@@ -40,6 +41,12 @@ function createWindow() {
 }
 
 app.whenReady().then(() => {
+  // Register custom protocol to serve local files securely
+  protocol.registerFileProtocol("video-file", (request, callback) => {
+    const filePath = decodeURIComponent(request.url.replace("video-file://", ""));
+    callback({ path: filePath });
+  });
+
   createWindow();
 
   /**
@@ -51,6 +58,13 @@ app.whenReady().then(() => {
       filters: [{ name: "Video Files", extensions: ["mp4", "mkv", "mov", "avi"] }],
     });
     return result.canceled ? null : result.filePaths[0];
+  });
+
+  /**
+   * Convert a local file path to a custom protocol URL that can be loaded in the renderer.
+   */
+  ipcMain.handle("video:getURL", async (_event, filePath: string) => {
+    return `video-file://${encodeURIComponent(filePath)}`;
   });
 
   /**

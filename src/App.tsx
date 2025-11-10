@@ -11,15 +11,18 @@ import { useProjectStore } from './state/projectStore';
 const App: React.FC = () => {
   const projectStore = useProjectStore();
   const [sourcePath, setSourcePath] = useState<string | null>(null);
+  const [videoURL, setVideoURL] = useState<string | null>(null);
 
   /**
    * Open a video using the native dialog exposed by the preload script. On success,
-   * store the file path and reset the project (if needed).
+   * store the file path and convert it to a URL that can be loaded in the renderer.
    */
   const handleOpenVideo = async () => {
     const filePath = await window.electronAPI.openVideo();
     if (filePath) {
       setSourcePath(filePath);
+      const url = await window.electronAPI.getVideoURL(filePath);
+      setVideoURL(url);
       // In a more complete app you might reset the project store here
       // or associate clips with this particular source.
     }
@@ -39,7 +42,7 @@ const App: React.FC = () => {
   return (
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Video Clipper</h1>
-      {!sourcePath ? (
+      {!videoURL ? (
         <button
           className="bg-blue-600 text-white px-4 py-2 rounded"
           onClick={handleOpenVideo}
@@ -48,7 +51,7 @@ const App: React.FC = () => {
         </button>
       ) : (
         <>
-          <VideoPlayer source={sourcePath} />
+          <VideoPlayer source={videoURL} />
           <TransportControls />
           <ClipList />
           <button
