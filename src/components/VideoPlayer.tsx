@@ -75,6 +75,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ source }) => {
         projectStore.markOut(player.currentTime());
       } else if (e.key === "a" || e.key === "A") {
         projectStore.addClipFromMarks();
+      } else if (e.key === "c" || e.key === "C") {
+        projectStore.clearMarks();
       }
     },
     [projectStore]

@@ -107,7 +107,7 @@ const ClipList: React.FC = () => {
                 <td style={tableCellStyle}>{clip.inSeconds.toFixed(2)}</td>
                 <td style={tableCellStyle}>{clip.outSeconds.toFixed(2)}</td>
                 <td style={tableCellStyle}>{(clip.outSeconds - clip.inSeconds).toFixed(2)}</td>
-                <td style={{ ...tableCellStyle, textAlign: "center" }}>
+                <td style={{ ...tableCellStyle, textAlign: "center", whiteSpace: "nowrap" }}>
                   <button
                     onClick={() => startEditing(clip.id, clip.name)}
                     style={{ ...buttonStyle, backgroundColor: "#3b82f6", marginRight: "4px" }}

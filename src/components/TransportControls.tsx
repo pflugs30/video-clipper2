@@ -59,22 +59,18 @@ const TransportControls: React.FC = () => {
           onClick={() => projectStore.clearMarks()}
           disabled={projectStore.markInTime === null && projectStore.markOutTime === null}
         >
-          Clear Marks
+          Clear Marks (c)
         </button>
-      </div>
-      <div style={{ fontSize: "14px" }}>
-        <div style={{ marginBottom: "4px" }}>
+        <span style={{ fontSize: "14px", marginLeft: "8px" }}>
           <span style={{ fontWeight: 600 }}>In:</span> {formatTime(projectStore.markInTime)}
-        </div>
-        <div style={{ marginBottom: "4px" }}>
-          <span style={{ fontWeight: 600 }}>Out:</span> {formatTime(projectStore.markOutTime)}
-        </div>
-        {projectStore.markInTime !== null && projectStore.markOutTime !== null && (
-          <div>
-            <span style={{ fontWeight: 600 }}>Duration:</span>{" "}
-            {(projectStore.markOutTime - projectStore.markInTime).toFixed(2)}s
-          </div>
-        )}
+          <span style={{ marginLeft: "16px", fontWeight: 600 }}>Out:</span> {formatTime(projectStore.markOutTime)}
+          {projectStore.markInTime !== null && projectStore.markOutTime !== null && (
+            <>
+              <span style={{ marginLeft: "16px", fontWeight: 600 }}>Duration:</span>{" "}
+              {(projectStore.markOutTime - projectStore.markInTime).toFixed(2)}s
+            </>
+          )}
+        </span>
       </div>
     </div>
   );
