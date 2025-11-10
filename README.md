@@ -6,9 +6,31 @@ This repository contains a minimal starting point for a desktop video clipping t
 
 - **Open Video** – Select a local video file using a native file dialog and load it into the player.
 - **Mark In/Out** – Use keyboard shortcuts (`i` to mark In, `o` to mark Out) or the buttons in the UI to set the start and end for a clip.
-- **Add Clip** – Press `a` (or click the “Add Clip” button) to store a clip based on the current in/out points.  Clips appear in a table with their timings.
-- **Batch Export (Stub)** – Select any number of clips in the table and click “Export Selected Clips.”  This skeleton logs the ffmpeg command that would run; integrate your own ffmpeg calls in `electron/main.ts` to make this functional.
+- **Add Clip** – Press `a` (or click the "Add Clip" button) to store a clip based on the current in/out points.  Clips appear in a table with their timings.
+- **Clear Marks** – Press `c` (or click the "Clear Marks" button) to clear the current in/out points without adding a clip.
+- **Batch Export (Stub)** – Select any number of clips in the table and click "Export Selected Clips."  This skeleton logs the ffmpeg command that would run; integrate your own ffmpeg calls in `electron/main.ts` to make this functional.
 - **State Management** – Uses a simple React context to manage clip data.  In this version the data is held in memory; you can extend it to save and load projects.
+
+## Keyboard Shortcuts
+
+### Clipping Controls
+- **i** – Mark In (set start point for clip)
+- **o** – Mark Out (set end point for clip)
+- **a** – Add Clip (create clip from current in/out marks)
+- **c** – Clear Marks (reset in/out points)
+
+### Video Playback Controls
+- **Space** – Play/Pause
+- **Left Arrow** – Skip backward 5 seconds
+- **Right Arrow** – Skip forward 5 seconds
+- **Ctrl + Left Arrow** – Skip backward 15 seconds
+- **Ctrl + Right Arrow** – Skip forward 15 seconds
+- **Shift + Left Arrow** – Decrease playback speed
+- **Shift + Right Arrow** – Increase playback speed
+- **,** (Comma) – Move one frame backward
+- **.** (Period) – Move one frame forward
+- **f** – Toggle fullscreen
+- **m** – Toggle mute
 
 ## Quick Start
 

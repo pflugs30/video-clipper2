@@ -63,20 +63,87 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ source }) => {
   }, [source]);
 
   /**
-   * Handle keyboard shortcuts globally for marking in, marking out, and adding a clip.
+   * Handle keyboard shortcuts for clipping operations and video playback controls.
    */
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
       const player = playerRef.current;
       if (!player) return;
+
+      // Clipping shortcuts
       if (e.key === "i" || e.key === "I") {
+        e.preventDefault();
         projectStore.markIn(player.currentTime());
       } else if (e.key === "o" || e.key === "O") {
+        e.preventDefault();
         projectStore.markOut(player.currentTime());
       } else if (e.key === "a" || e.key === "A") {
+        e.preventDefault();
         projectStore.addClipFromMarks();
       } else if (e.key === "c" || e.key === "C") {
+        e.preventDefault();
         projectStore.clearMarks();
+      }
+      // Playback control shortcuts
+      else if (e.key === " ") {
+        e.preventDefault();
+        if (player.paused()) {
+          player.play();
+        } else {
+          player.pause();
+        }
+      } else if (e.key === "ArrowLeft" && e.shiftKey) {
+        e.preventDefault();
+        const currentRate = player.playbackRate();
+        if (typeof currentRate === "number") {
+          player.playbackRate(Math.max(0.25, currentRate - 0.25));
+        }
+      } else if (e.key === "ArrowRight" && e.shiftKey) {
+        e.preventDefault();
+        const currentRate = player.playbackRate();
+        if (typeof currentRate === "number") {
+          player.playbackRate(Math.min(2, currentRate + 0.25));
+        }
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        const skipAmount = e.ctrlKey ? 15 : 5;
+        const currentTime = player.currentTime();
+        if (typeof currentTime === "number") {
+          player.currentTime(Math.max(0, currentTime - skipAmount));
+        }
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        const skipAmount = e.ctrlKey ? 15 : 5;
+        const currentTime = player.currentTime();
+        const duration = player.duration();
+        if (typeof currentTime === "number" && typeof duration === "number") {
+          player.currentTime(Math.min(duration, currentTime + skipAmount));
+        }
+      } else if (e.key === ",") {
+        e.preventDefault();
+        // Move one frame backward (assuming 30fps)
+        const currentTime = player.currentTime();
+        if (typeof currentTime === "number") {
+          player.currentTime(Math.max(0, currentTime - 1 / 30));
+        }
+      } else if (e.key === ".") {
+        e.preventDefault();
+        // Move one frame forward (assuming 30fps)
+        const currentTime = player.currentTime();
+        const duration = player.duration();
+        if (typeof currentTime === "number" && typeof duration === "number") {
+          player.currentTime(Math.min(duration, currentTime + 1 / 30));
+        }
+      } else if (e.key === "f" || e.key === "F") {
+        e.preventDefault();
+        if (player.isFullscreen()) {
+          player.exitFullscreen();
+        } else {
+          player.requestFullscreen();
+        }
+      } else if (e.key === "m" || e.key === "M") {
+        e.preventDefault();
+        player.muted(!player.muted());
       }
     },
     [projectStore]
