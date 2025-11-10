@@ -18,18 +18,33 @@ This project is a skeleton and does not ship with Node modules. To run it locall
    ```sh
    npm install
    ```
-2. Start the Vite dev server for the renderer:
+
+2. Run in development mode (recommended - starts both Vite and Electron):
+   ```sh
+   npm start
+   ```
+   This will concurrently start the Vite dev server on http://localhost:5173 and launch Electron.
+
+**Alternative manual approach:**
+
+1. Start the Vite dev server for the renderer:
    ```sh
    npm run dev
    ```
-   This will start a development server on http://localhost:5173.
-3. In another terminal, start Electron with the current directory:
+2. In another terminal, compile and start Electron:
    ```sh
-   npx electron .
+   npm run electron:dev
    ```
-   Electron will load the renderer from the Vite dev server.
 
-When you’re ready to build a production version, compile the renderer with `npm run build` and configure your Electron build pipeline accordingly. The main process entry point is `electron/main.ts` (compiled to JavaScript).
+**Production build:**
+
+When you're ready to build a production version:
+```sh
+npm run build          # Build the React renderer
+npm run build:electron # Compile TypeScript for Electron main process
+```
+
+Then configure your Electron build pipeline (e.g., electron-builder) accordingly. The main process entry point is `electron/main.ts` (compiled to `electron/main.js`).
 
 ## Next Steps
 

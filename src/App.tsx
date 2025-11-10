@@ -17,7 +17,7 @@ const App: React.FC = () => {
    * store the file path and reset the project (if needed).
    */
   const handleOpenVideo = async () => {
-    const filePath = await (window as any).electronAPI.openVideo();
+    const filePath = await window.electronAPI.openVideo();
     if (filePath) {
       setSourcePath(filePath);
       // In a more complete app you might reset the project store here
@@ -32,7 +32,7 @@ const App: React.FC = () => {
   const handleExportSelected = async () => {
     if (!sourcePath) return;
     for (const clip of projectStore.selectedClips) {
-      await (window as any).electronAPI.exportClip(sourcePath, clip);
+      await window.electronAPI.exportClip(sourcePath, clip);
     }
   };
 
