@@ -1,0 +1,15 @@
+/*
+ * Minimal base styles for the app. In your own project you can integrate
+ * Tailwind CSS and include the appropriate directives here. The video.js
+ * CSS is imported in the VideoPlayer component.
+ */
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background-color: #f9f9f9;
+}
+
+.video-js {
+  width: 100%;
+  height: auto;
+}
