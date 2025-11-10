@@ -1,4 +1,4 @@
-import { contextBridge, ipcRenderer } from 'electron';
+import { contextBridge, ipcRenderer } from "electron";
 
 interface Clip {
   id: string;
@@ -13,12 +13,12 @@ interface Clip {
  * renderer via the `contextBridge` so that the renderer can invoke native
  * dialogs and kick off exports without having full access to Node.js.
  */
-contextBridge.exposeInMainWorld('electronAPI', {
+contextBridge.exposeInMainWorld("electronAPI", {
   /** Prompt the user to select a video file and return its path. */
-  openVideo: (): Promise<string | null> => ipcRenderer.invoke('dialog:openVideo'),
+  openVideo: (): Promise<string | null> => ipcRenderer.invoke("dialog:openVideo"),
   /** Prompt the user to choose an output directory and return its path. */
-  chooseOutputDir: (): Promise<string | null> => ipcRenderer.invoke('dialog:chooseOutputDir'),
+  chooseOutputDir: (): Promise<string | null> => ipcRenderer.invoke("dialog:chooseOutputDir"),
   /** Trigger an export operation for a clip. */
   exportClip: (sourcePath: string, clip: Clip): Promise<boolean> =>
-    ipcRenderer.invoke('export:clip', { sourcePath, clip }),
+    ipcRenderer.invoke("export:clip", { sourcePath, clip }),
 });
