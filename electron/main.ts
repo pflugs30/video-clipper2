@@ -21,6 +21,7 @@ function createWindow() {
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       contextIsolation: true,
+      nodeIntegration: false,
     },
   });
 
@@ -33,6 +34,9 @@ function createWindow() {
     // Load the index.html from the packaged bundle in production.
     win.loadFile(path.join(__dirname, "../dist/index.html"));
   }
+  
+  // Log the preload path for debugging
+  console.log("Preload script path:", path.join(__dirname, "preload.js"));
 }
 
 app.whenReady().then(() => {

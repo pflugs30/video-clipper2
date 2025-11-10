@@ -13,6 +13,9 @@ interface Clip {
  * renderer via the `contextBridge` so that the renderer can invoke native
  * dialogs and kick off exports without having full access to Node.js.
  */
+
+console.log("Preload script is running!");
+
 contextBridge.exposeInMainWorld("electronAPI", {
   /** Prompt the user to select a video file and return its path. */
   openVideo: (): Promise<string | null> => ipcRenderer.invoke("dialog:openVideo"),
@@ -22,3 +25,5 @@ contextBridge.exposeInMainWorld("electronAPI", {
   exportClip: (sourcePath: string, clip: Clip): Promise<boolean> =>
     ipcRenderer.invoke("export:clip", { sourcePath, clip }),
 });
+
+console.log("electronAPI exposed to window");

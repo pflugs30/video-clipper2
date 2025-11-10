@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "module": "ES2020",
+    "module": "CommonJS",
     "lib": ["ES2020"],
     "moduleResolution": "node",
     "strict": true,
@@ -13,6 +13,6 @@
     "rootDir": "electron",
     "types": ["node"]
   },
-  "include": ["electron/main.ts"],
-  "exclude": ["node_modules", "dist", "src", "electron/preload.ts"]
+  "include": ["electron/preload.ts"],
+  "exclude": ["node_modules", "dist", "src", "electron/main.ts"]
 }
