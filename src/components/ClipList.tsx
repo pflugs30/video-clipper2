@@ -39,34 +39,48 @@ const ClipList: React.FC = () => {
     setEditingName("");
   };
 
+  const tableCellStyle = {
+    border: "1px solid #d1d5db",
+    padding: "4px 8px",
+  };
+
+  const buttonStyle = {
+    padding: "4px 8px",
+    borderRadius: "4px",
+    border: "none",
+    cursor: "pointer",
+    fontSize: "12px",
+    color: "white",
+  };
+
   return (
-    <div className="mt-4">
-      <h2 className="text-xl font-semibold mb-2">Clips</h2>
+    <div style={{ marginTop: "16px" }}>
+      <h2 style={{ fontSize: "20px", fontWeight: 600, marginBottom: "8px" }}>Clips</h2>
       {projectStore.clips.length === 0 ? (
         <p>No clips added yet. Use Mark In/Out (i/o) and press `a` to add one.</p>
       ) : (
-        <table className="min-w-full border-collapse">
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
           <thead>
             <tr>
-              <th className="border px-2 py-1">Select</th>
-              <th className="border px-2 py-1">Name</th>
-              <th className="border px-2 py-1">In (s)</th>
-              <th className="border px-2 py-1">Out (s)</th>
-              <th className="border px-2 py-1">Duration (s)</th>
-              <th className="border px-2 py-1">Actions</th>
+              <th style={tableCellStyle}>Select</th>
+              <th style={tableCellStyle}>Name</th>
+              <th style={tableCellStyle}>In (s)</th>
+              <th style={tableCellStyle}>Out (s)</th>
+              <th style={tableCellStyle}>Duration (s)</th>
+              <th style={tableCellStyle}>Actions</th>
             </tr>
           </thead>
           <tbody>
             {projectStore.clips.map((clip) => (
-              <tr key={clip.id} className="hover:bg-gray-100">
-                <td className="border px-2 py-1 text-center">
+              <tr key={clip.id} style={{ backgroundColor: "white" }}>
+                <td style={{ ...tableCellStyle, textAlign: "center" }}>
                   <input
                     type="checkbox"
                     checked={projectStore.isSelected(clip.id)}
                     onChange={() => handleSelect(clip.id)}
                   />
                 </td>
-                <td className="border px-2 py-1">
+                <td style={tableCellStyle}>
                   {editingId === clip.id ? (
                     <input
                       type="text"
@@ -77,33 +91,33 @@ const ClipList: React.FC = () => {
                         if (e.key === "Escape") cancelEdit();
                       }}
                       onBlur={() => saveEdit(clip.id)}
-                      className="w-full px-1 border rounded"
+                      style={{ width: "100%", padding: "2px 4px", border: "1px solid #d1d5db", borderRadius: "2px" }}
                       autoFocus
                     />
                   ) : (
                     <span
                       onDoubleClick={() => startEditing(clip.id, clip.name)}
-                      className="cursor-pointer"
+                      style={{ cursor: "pointer" }}
                       title="Double-click to edit"
                     >
                       {clip.name}
                     </span>
                   )}
                 </td>
-                <td className="border px-2 py-1">{clip.inSeconds.toFixed(2)}</td>
-                <td className="border px-2 py-1">{clip.outSeconds.toFixed(2)}</td>
-                <td className="border px-2 py-1">{(clip.outSeconds - clip.inSeconds).toFixed(2)}</td>
-                <td className="border px-2 py-1 text-center">
+                <td style={tableCellStyle}>{clip.inSeconds.toFixed(2)}</td>
+                <td style={tableCellStyle}>{clip.outSeconds.toFixed(2)}</td>
+                <td style={tableCellStyle}>{(clip.outSeconds - clip.inSeconds).toFixed(2)}</td>
+                <td style={{ ...tableCellStyle, textAlign: "center" }}>
                   <button
                     onClick={() => startEditing(clip.id, clip.name)}
-                    className="bg-blue-500 text-white px-2 py-1 rounded mr-1 text-xs hover:bg-blue-600"
+                    style={{ ...buttonStyle, backgroundColor: "#3b82f6", marginRight: "4px" }}
                     title="Edit name"
                   >
                     ✏️
                   </button>
                   <button
                     onClick={() => handleDelete(clip.id)}
-                    className="bg-red-500 text-white px-2 py-1 rounded text-xs hover:bg-red-600"
+                    style={{ ...buttonStyle, backgroundColor: "#ef4444" }}
                     title="Delete clip"
                   >
                     🗑️

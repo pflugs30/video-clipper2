@@ -16,40 +16,62 @@ const TransportControls: React.FC = () => {
     return `${mins}:${secs.padStart(5, "0")}`;
   };
 
+  const buttonStyle = {
+    padding: "8px 12px",
+    borderRadius: "4px",
+    border: "none",
+    cursor: "pointer",
+    fontSize: "14px",
+  };
+
+  const disabledButtonStyle = {
+    ...buttonStyle,
+    opacity: 0.5,
+    cursor: "not-allowed",
+  };
+
   return (
-    <div className="my-4">
-      <div className="flex items-center space-x-2 mb-2">
-        <button className="bg-gray-200 px-3 py-2 rounded hover:bg-gray-300" onClick={() => projectStore.markIn()}>
+    <div style={{ margin: "16px 0" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "8px" }}>
+        <button style={{ ...buttonStyle, backgroundColor: "#e5e7eb" }} onClick={() => projectStore.markIn()}>
           Mark In (i)
         </button>
-        <button className="bg-gray-200 px-3 py-2 rounded hover:bg-gray-300" onClick={() => projectStore.markOut()}>
+        <button style={{ ...buttonStyle, backgroundColor: "#e5e7eb" }} onClick={() => projectStore.markOut()}>
           Mark Out (o)
         </button>
         <button
-          className="bg-blue-500 text-white px-3 py-2 rounded hover:bg-blue-600"
+          style={
+            projectStore.markInTime === null || projectStore.markOutTime === null
+              ? { ...disabledButtonStyle, backgroundColor: "#93c5fd", color: "white" }
+              : { ...buttonStyle, backgroundColor: "#3b82f6", color: "white" }
+          }
           onClick={() => projectStore.addClipFromMarks()}
           disabled={projectStore.markInTime === null || projectStore.markOutTime === null}
         >
           Add Clip (a)
         </button>
         <button
-          className="bg-red-500 text-white px-3 py-2 rounded hover:bg-red-600"
+          style={
+            projectStore.markInTime === null && projectStore.markOutTime === null
+              ? { ...disabledButtonStyle, backgroundColor: "#fca5a5", color: "white" }
+              : { ...buttonStyle, backgroundColor: "#ef4444", color: "white" }
+          }
           onClick={() => projectStore.clearMarks()}
           disabled={projectStore.markInTime === null && projectStore.markOutTime === null}
         >
           Clear Marks
         </button>
       </div>
-      <div className="text-sm space-y-1">
-        <div>
-          <span className="font-semibold">In:</span> {formatTime(projectStore.markInTime)}
+      <div style={{ fontSize: "14px" }}>
+        <div style={{ marginBottom: "4px" }}>
+          <span style={{ fontWeight: 600 }}>In:</span> {formatTime(projectStore.markInTime)}
         </div>
-        <div>
-          <span className="font-semibold">Out:</span> {formatTime(projectStore.markOutTime)}
+        <div style={{ marginBottom: "4px" }}>
+          <span style={{ fontWeight: 600 }}>Out:</span> {formatTime(projectStore.markOutTime)}
         </div>
         {projectStore.markInTime !== null && projectStore.markOutTime !== null && (
           <div>
-            <span className="font-semibold">Duration:</span>{" "}
+            <span style={{ fontWeight: 600 }}>Duration:</span>{" "}
             {(projectStore.markOutTime - projectStore.markInTime).toFixed(2)}s
           </div>
         )}

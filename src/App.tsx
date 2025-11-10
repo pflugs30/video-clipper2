@@ -40,21 +40,50 @@ const App: React.FC = () => {
   };
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Video Clipper</h1>
+    <div style={{ padding: "16px", height: "100vh", display: "flex", flexDirection: "column" }}>
+      <h1 style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "16px" }}>Video Clipper</h1>
       {!videoURL ? (
-        <button className="bg-blue-600 text-white px-4 py-2 rounded" onClick={handleOpenVideo}>
+        <button
+          style={{
+            backgroundColor: "#2563eb",
+            color: "white",
+            padding: "8px 16px",
+            borderRadius: "4px",
+            border: "none",
+            cursor: "pointer",
+          }}
+          onClick={handleOpenVideo}
+        >
           Open Video
         </button>
       ) : (
-        <>
-          <VideoPlayer source={videoURL} />
-          <TransportControls />
-          <ClipList />
-          <button className="mt-4 bg-green-600 text-white px-4 py-2 rounded" onClick={handleExportSelected}>
-            Export Selected Clips
-          </button>
-        </>
+        <div style={{ display: "flex", flex: 1, gap: "16px", overflow: "hidden" }}>
+          {/* Left side: Video Player and Controls */}
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
+            <VideoPlayer source={videoURL} />
+            <TransportControls />
+            <button
+              style={{
+                marginTop: "16px",
+                backgroundColor: projectStore.selectedClips.length === 0 ? "#9ca3af" : "#16a34a",
+                color: "white",
+                padding: "8px 16px",
+                borderRadius: "4px",
+                border: "none",
+                cursor: projectStore.selectedClips.length === 0 ? "not-allowed" : "pointer",
+              }}
+              onClick={handleExportSelected}
+              disabled={projectStore.selectedClips.length === 0}
+            >
+              Export Selected Clips ({projectStore.selectedClips.length})
+            </button>
+          </div>
+
+          {/* Right side: Clips List */}
+          <div style={{ width: "384px", flexShrink: 0, overflowY: "auto" }}>
+            <ClipList />
+          </div>
+        </div>
       )}
     </div>
   );
