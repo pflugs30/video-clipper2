@@ -32,6 +32,17 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ source }) => {
         preload: "auto",
         fluid: true,
       });
+
+      // Update current time in the store as video plays
+      const updateTime = () => {
+        if (playerRef.current) {
+          const time = playerRef.current.currentTime();
+          if (typeof time === "number") {
+            projectStore.setCurrentTime(time);
+          }
+        }
+      };
+      playerRef.current.on("timeupdate", updateTime);
     }
 
     // Dispose of the player when component unmounts
@@ -42,7 +53,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ source }) => {
         isInitialized.current = false;
       }
     };
-  }, []);
+  }, [projectStore]);
 
   // Update source when it changes
   useEffect(() => {
