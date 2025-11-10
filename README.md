@@ -42,3 +42,34 @@ This skeleton intentionally leaves many details open so you can tailor the tool 
 - **yt-dlp integration** – Optionally integrate yt‑dlp to download online videos directly into the app for clipping.
 
 Feel free to build upon this starting point and adapt it to your workflow.
+
+# Video Clipper – v002 (dev‑ready)
+
+This build fixes the Electron entry issue by compiling TypeScript to JS before launch and adds the missing Vite files.
+
+## Quick start
+
+```bash
+npm install
+# Terminal A – start the Vite renderer
+npm run dev
+# Terminal B – compile TS and start Electron
+npm run start
+```
+
+- Dev server: http://localhost:5173
+- Electron `main`: `dist/electron/main.js` after `npm run compile`
+
+## Build for prod (renderer only for now)
+
+```bash
+npm run build
+# Produces dist/renderer/; Electron files compile to dist/electron/
+```
+
+## Keyboard
+
+- Space: play/pause (when player focused)
+- I: mark In
+- O: mark Out
+- A: add clip from current in/out
