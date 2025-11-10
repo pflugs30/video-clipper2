@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import VideoPlayer from './components/VideoPlayer';
-import ClipList from './components/ClipList';
-import TransportControls from './components/TransportControls';
-import { useProjectStore } from './state/projectStore';
+import React, { useState } from "react";
+import VideoPlayer from "./components/VideoPlayer";
+import ClipList from "./components/ClipList";
+import TransportControls from "./components/TransportControls";
+import { useProjectStore } from "./state/projectStore";
 
 /**
  * The top‑level React component for the application. It handles opening a video,
@@ -43,10 +43,7 @@ const App: React.FC = () => {
     <div className="p-4">
       <h1 className="text-2xl font-bold mb-4">Video Clipper</h1>
       {!videoURL ? (
-        <button
-          className="bg-blue-600 text-white px-4 py-2 rounded"
-          onClick={handleOpenVideo}
-        >
+        <button className="bg-blue-600 text-white px-4 py-2 rounded" onClick={handleOpenVideo}>
           Open Video
         </button>
       ) : (
@@ -54,10 +51,7 @@ const App: React.FC = () => {
           <VideoPlayer source={videoURL} />
           <TransportControls />
           <ClipList />
-          <button
-            className="mt-4 bg-green-600 text-white px-4 py-2 rounded"
-            onClick={handleExportSelected}
-          >
+          <button className="mt-4 bg-green-600 text-white px-4 py-2 rounded" onClick={handleExportSelected}>
             Export Selected Clips
           </button>
         </>

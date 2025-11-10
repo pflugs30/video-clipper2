@@ -1,8 +1,6 @@
 import { app, BrowserWindow, ipcMain, dialog, protocol } from "electron";
 import path from "path";
 import { fileURLToPath } from "url";
-import { spawn } from "child_process";
-import fs from "fs";
 
 // ES module equivalent of __dirname
 const __filename = fileURLToPath(import.meta.url);
