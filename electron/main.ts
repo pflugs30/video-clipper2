@@ -1,6 +1,7 @@
 import { app, BrowserWindow, ipcMain, dialog, protocol } from "electron";
 import path from "path";
 import { fileURLToPath } from "url";
+import fs from "fs/promises";
 
 // ES module equivalent of __dirname
 const __filename = fileURLToPath(import.meta.url);
@@ -103,6 +104,66 @@ app.whenReady().then(() => {
     //   console.log(`ffmpeg process exited with code ${code}`);
     // });
     return true;
+  });
+
+  /**
+   * Prompt the user to select a JSON project file to load. Returns the file path or null if canceled.
+   */
+  ipcMain.handle("dialog:openProject", async () => {
+    const result = await dialog.showOpenDialog({
+      properties: ["openFile"],
+      filters: [{ name: "Video Clipper Projects", extensions: ["json"] }],
+    });
+    return result.canceled ? null : result.filePaths[0];
+  });
+
+  /**
+   * Prompt the user to choose where to save a JSON project file. Returns the file path or null if canceled.
+   */
+  ipcMain.handle("dialog:saveProject", async () => {
+    const result = await dialog.showSaveDialog({
+      filters: [{ name: "Video Clipper Projects", extensions: ["json"] }],
+      defaultPath: "untitled-project.json",
+    });
+    return result.canceled ? null : result.filePath;
+  });
+
+  /**
+   * Read a project file from disk and return its contents as a string.
+   */
+  ipcMain.handle("file:readProject", async (_event, filePath: string) => {
+    try {
+      const content = await fs.readFile(filePath, "utf-8");
+      return { success: true, content };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unknown error";
+      return { success: false, error: message };
+    }
+  });
+
+  /**
+   * Write project data to a file on disk.
+   */
+  ipcMain.handle("file:writeProject", async (_event, filePath: string, data: string) => {
+    try {
+      await fs.writeFile(filePath, data, "utf-8");
+      return { success: true };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unknown error";
+      return { success: false, error: message };
+    }
+  });
+
+  /**
+   * Check if a file exists at the given path.
+   */
+  ipcMain.handle("file:exists", async (_event, filePath: string) => {
+    try {
+      await fs.access(filePath);
+      return true;
+    } catch {
+      return false;
+    }
   });
 
   // On macOS it's common to recreate a window when the dock icon is clicked and there are no other windows open.

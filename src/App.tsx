@@ -23,8 +23,7 @@ const App: React.FC = () => {
       setSourcePath(filePath);
       const url = await window.electronAPI.getVideoURL(filePath);
       setVideoURL(url);
-      // In a more complete app you might reset the project store here
-      // or associate clips with this particular source.
+      projectStore.addSource(filePath);
     }
   };
 
@@ -39,9 +38,60 @@ const App: React.FC = () => {
     }
   };
 
+  /**
+   * Save the current project to a JSON file.
+   */
+  const handleSaveProject = async () => {
+    await projectStore.saveProject();
+  };
+
+  /**
+   * Load a project from a JSON file.
+   */
+  const handleLoadProject = async () => {
+    const videoPath = await projectStore.loadProject();
+    // After loading, update the video source if one was loaded
+    if (videoPath) {
+      setSourcePath(videoPath);
+      const url = await window.electronAPI.getVideoURL(videoPath);
+      setVideoURL(url);
+    }
+  };
+
   return (
     <div style={{ padding: "16px", height: "100vh", display: "flex", flexDirection: "column" }}>
-      <h1 style={{ fontSize: "24px", fontWeight: "bold", marginBottom: "16px" }}>Video Clipper</h1>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+        <h1 style={{ fontSize: "24px", fontWeight: "bold", margin: 0 }}>Video Clipper</h1>
+        <div style={{ display: "flex", gap: "8px" }}>
+          <button
+            style={{
+              backgroundColor: "#0891b2",
+              color: "white",
+              padding: "8px 16px",
+              borderRadius: "4px",
+              border: "none",
+              cursor: "pointer",
+            }}
+            onClick={handleLoadProject}
+          >
+            Load Project
+          </button>
+          <button
+            style={{
+              backgroundColor: !videoURL ? "#9ca3af" : "#0891b2",
+              color: "white",
+              padding: "8px 16px",
+              borderRadius: "4px",
+              border: "none",
+              cursor: !videoURL ? "not-allowed" : "pointer",
+            }}
+            onClick={handleSaveProject}
+            disabled={!videoURL}
+          >
+            Save Project
+          </button>
+        </div>
+      </div>
       {!videoURL ? (
         <button
           style={{

@@ -8,8 +8,8 @@ This repository contains a minimal starting point for a desktop video clipping t
 - **Mark In/Out** – Use keyboard shortcuts (`i` to mark In, `o` to mark Out) or the buttons in the UI to set the start and end for a clip.
 - **Add Clip** – Press `a` (or click the "Add Clip" button) to store a clip based on the current in/out points.  Clips appear in a table with their timings.
 - **Clear Marks** – Press `c` (or click the "Clear Marks" button) to clear the current in/out points without adding a clip.
+- **Save/Load Projects** – Save your clips and video source information to a JSON file. Load previously saved projects with validation.
 - **Batch Export (Stub)** – Select any number of clips in the table and click "Export Selected Clips."  This skeleton logs the ffmpeg command that would run; integrate your own ffmpeg calls in `electron/main.ts` to make this functional.
-- **State Management** – Uses a simple React context to manage clip data.  In this version the data is held in memory; you can extend it to save and load projects.
 
 ## Keyboard Shortcuts
 
@@ -73,9 +73,18 @@ Then configure your Electron build pipeline (e.g., electron-builder) accordingly
 This skeleton intentionally leaves many details open so you can tailor the tool to your needs. Here are a few ideas:
 
 - **Real ffmpeg integration** – Replace the stub in `ipcMain.handle('export:clip', ...)` with a call to spawn ffmpeg. Use the `child_process` module to run ffmpeg with `-ss`, `-to`, and other options to trim the clip.
-- **Project persistence** – Save clips and project metadata to a file (e.g. JSON or SQLite). Provide open/save project dialogs.
 - **Enhanced UI** – Use Tailwind CSS (if included in your build pipeline) to polish the interface. Add waveform previews, thumbnails, or drag‑and‑drop ordering.
 - **Multiple sources** – Allow loading and managing clips from multiple source videos within the same project.
 - **yt-dlp integration** – Optionally integrate yt‑dlp to download online videos directly into the app for clipping.
+
+## Future Enhancements / TODOs
+
+- **Auto-save** – Implement periodic auto-saving to prevent data loss. Consider saving to a temporary location and prompting on app close.
+- **Relative paths** – Support relative video paths for better project portability when moving files between machines.
+- **File relocation** – When a video source is missing, prompt the user to relocate the file instead of blocking the load.
+- **Version migration** – Add logic to migrate older project file formats to the current version automatically.
+- **Recent projects** – Track recently opened projects for quick access (consider using electron-store or localStorage).
+- **Unsaved changes prompt** – Warn users when closing the app or loading a new project with unsaved changes.
+- **Better validation** – Use a schema validation library (e.g., Zod) for more robust project file validation.
 
 Feel free to build upon this starting point and adapt it to your workflow.
