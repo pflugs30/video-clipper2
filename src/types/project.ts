@@ -4,12 +4,13 @@
  */
 
 import { Clip } from "../state/projectStore";
+import { Event } from "./event";
 
 /**
  * Current version of the project file format.
  * Increment this when making breaking changes to the structure.
  */
-export const PROJECT_FILE_VERSION = "1.0.0";
+export const PROJECT_FILE_VERSION = "2.0.0";
 
 /**
  * Metadata about the source video file.
@@ -23,6 +24,7 @@ export interface VideoSource {
 
 /**
  * Complete project data structure for save/load operations.
+ * Each project represents a real-world sporting event with associated clips.
  */
 export interface ProjectData {
   /** Version of the project file format */
@@ -35,6 +37,12 @@ export interface ProjectData {
   modified: string;
   /** Information about the source video */
   videoSource: VideoSource;
+  /**
+   * Event metadata for this project.
+   * Contains all relevant information about the sporting event.
+   * @see {@link Event}
+   */
+  event?: Event;
   /** Array of clips defined in this project */
   clips: Clip[];
 }
