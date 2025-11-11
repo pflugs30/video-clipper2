@@ -1,7 +1,8 @@
-import React, { useEffect, useRef, useCallback } from "react";
+import React, { useEffect, useRef, useCallback, useState } from "react";
 import videojs from "video.js";
 import "video.js/dist/video-js.css";
 import { useProjectStore } from "../state/projectStore";
+import { formatTimestamp } from "../utils/timeFormat";
 
 type VideoJsPlayer = ReturnType<typeof videojs>;
 
@@ -21,6 +22,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ source }) => {
   const playerRef = useRef<VideoJsPlayer | null>(null);
   const isInitialized = useRef(false);
   const projectStore = useProjectStore();
+  const [localPlaybackSpeed, setLocalPlaybackSpeed] = useState<number>(1.0);
 
   // Initialize the video.js player once when component mounts
   useEffect(() => {
@@ -43,6 +45,18 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ source }) => {
         }
       };
       playerRef.current.on("timeupdate", updateTime);
+
+      // Update playback speed in the store when it changes
+      const updateSpeed = () => {
+        if (playerRef.current) {
+          const speed = playerRef.current.playbackRate();
+          if (typeof speed === "number") {
+            setLocalPlaybackSpeed(speed);
+            projectStore.setPlaybackSpeed(speed);
+          }
+        }
+      };
+      playerRef.current.on("ratechange", updateSpeed);
     }
 
     // Dispose of the player when component unmounts
@@ -158,8 +172,38 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ source }) => {
   }, [handleKeyDown]);
 
   return (
-    <div data-vjs-player style={{ width: "100%", maxWidth: "960px" }}>
-      <video ref={videoNode} className="video-js vjs-big-play-centered" playsInline />
+    <div style={{ position: "relative", width: "100%", maxWidth: "960px" }}>
+      {/* Overlay labels for current time and playback speed */}
+      <div
+        style={{
+          position: "absolute",
+          top: "10px",
+          right: "10px",
+          zIndex: 10,
+          backgroundColor: "rgba(0, 0, 0, 0.7)",
+          color: "white",
+          padding: "8px 12px",
+          borderRadius: "4px",
+          fontSize: "14px",
+          fontFamily: "monospace",
+          pointerEvents: "none",
+          display: "flex",
+          flexDirection: "column",
+          gap: "4px",
+          alignItems: "flex-end",
+        }}
+      >
+        <div>
+          <span style={{ fontWeight: 600 }}>Time:</span> {formatTimestamp(projectStore.currentTime)}
+        </div>
+        <div>
+          <span style={{ fontWeight: 600 }}>Speed:</span> {localPlaybackSpeed.toFixed(2)}x
+        </div>
+      </div>
+
+      <div data-vjs-player style={{ width: "100%" }}>
+        <video ref={videoNode} className="video-js vjs-big-play-centered" playsInline />
+      </div>
     </div>
   );
 };

@@ -16,10 +16,12 @@ interface ProjectState {
   markInTime: number | null;
   markOutTime: number | null;
   currentTime: number;
+  playbackSpeed: number;
   videoSourcePath: string | null;
   currentProjectPath: string | null;
   isDirty: boolean;
   setCurrentTime: (time: number) => void;
+  setPlaybackSpeed: (speed: number) => void;
   markIn: (time?: number) => void;
   markOut: (time?: number) => void;
   addClipFromMarks: () => void;
@@ -60,6 +62,8 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [markOutTime, setMarkOutTime] = useState<number | null>(null);
   // Current playback time from the video player.
   const [currentTime, setCurrentTime] = useState<number>(0);
+  // Current playback speed (1.0 = normal speed).
+  const [playbackSpeed, setPlaybackSpeed] = useState<number>(1.0);
   // Path to the currently loaded video source.
   const [videoSourcePath, setVideoSourcePath] = useState<string | null>(null);
   // Path to the currently open project file (null if never saved).
@@ -314,10 +318,12 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
         markInTime,
         markOutTime,
         currentTime,
+        playbackSpeed,
         videoSourcePath,
         currentProjectPath,
         isDirty,
         setCurrentTime,
+        setPlaybackSpeed,
         markIn,
         markOut,
         addClipFromMarks,
