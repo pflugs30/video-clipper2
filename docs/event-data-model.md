@@ -21,29 +21,29 @@ This data model enables:
 Represents a sporting event with all associated metadata.
 
 | Property          | Type         | Required | Description                                  |
-| ----------------- | ------------ | -------- | -------------------------------------------- |
-| `date`            | `Date`       | Yes      | The date when the event occurred             |
-| `gender`          | `Gender`     | Yes      | Gender classification of the event           |
-| `ageLevel`        | `AgeLevel`   | Yes      | Age/competition level classification         |
-| `sport`           | `Sport`      | Yes      | Type of sport (defaults to basketball)       |
-| `eventName`       | `string`     | No       | Descriptive name for the event               |
-| `location`        | `string`     | No       | Physical location or venue of the event      |
-| `homeTeam`        | `string`     | No       | Name of the home team                        |
-| `awayTeam`        | `string`     | No       | Name of the away team                        |
-| `officiatingCrew` | `Official[]` | Yes      | Array of officials working the event         |
-| `videoLink`       | `string`     | No       | URL/hyperlink to the video recording         |
-| `notes`           | `string`     | No       | Additional notes or comments about the event |
-| `createdOn`       | `Date`       | Yes      | Timestamp when the event record was created  |
-| `modifiedOn`      | `Date`       | Yes      | Timestamp of the last modification           |
+| ----------------- | ------------ | :------: | -------------------------------------------- |
+| `date`            | `Date`       |   Yes    | The date when the event occurred             |
+| `gender`          | `Gender`     |   Yes    | Gender classification of the event           |
+| `ageLevel`        | `AgeLevel`   |   Yes    | Age/competition level classification         |
+| `sport`           | `Sport`      |   Yes    | Type of sport (defaults to basketball)       |
+| `eventName`       | `string`     |    No    | Descriptive name for the event               |
+| `location`        | `string`     |    No    | Physical location or venue of the event      |
+| `homeTeam`        | `string`     |    No    | Name of the home team                        |
+| `awayTeam`        | `string`     |    No    | Name of the away team                        |
+| `officiatingCrew` | `Official[]` |   Yes    | Array of officials working the event         |
+| `videoLink`       | `string`     |    No    | URL/hyperlink to the video recording         |
+| `notes`           | `string`     |    No    | Additional notes or comments about the event |
+| `createdOn`       | `Date`       |   Yes    | Timestamp when the event record was created  |
+| `modifiedOn`      | `Date`       |   Yes    | Timestamp of the last modification           |
 
 ### Official
 
 Represents an official (referee, umpire, etc.) working an event.
 
-| Property   | Type     | Required | Description                                              |
-| ---------- | -------- | -------- | -------------------------------------------------------- |
-| `name`     | `string` | Yes      | Full name of the official                                |
-| `position` | `string` | No       | Position or role (e.g., "Referee", "Umpire", "R1", "R2") |
+| Property   | Type     | Required | Description                                        |
+| ---------- | -------- | :------: | -------------------------------------------------- |
+| `name`     | `string` |   Yes    | Full name of the official                          |
+| `position` | `string` |    No    | Position or role (e.g., "Referee", "Umpire", etc.) |
 
 ---
 
