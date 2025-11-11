@@ -70,19 +70,31 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
   /**
    * Mark the starting time of a clip. If provided a time, that value is used;
    * otherwise uses the current time from the player.
+   * If the new In time is after the current Out time, the Out time is adjusted to match.
    */
   const markIn = (time?: number) => {
     const timeToUse = typeof time === "number" ? time : currentTime;
     setMarkInTime(timeToUse);
+
+    // Validate: if Out time exists and is before the new In time, adjust Out to match In
+    if (markOutTime !== null && timeToUse > markOutTime) {
+      setMarkOutTime(timeToUse);
+    }
   };
 
   /**
    * Mark the ending time of a clip. If provided a time, that value is used;
    * otherwise uses the current time from the player.
+   * If the new Out time is before the current In time, the In time is adjusted to match.
    */
   const markOut = (time?: number) => {
     const timeToUse = typeof time === "number" ? time : currentTime;
     setMarkOutTime(timeToUse);
+
+    // Validate: if In time exists and is after the new Out time, adjust In to match Out
+    if (markInTime !== null && timeToUse < markInTime) {
+      setMarkInTime(timeToUse);
+    }
   };
 
   /**

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useProjectStore } from "../state/projectStore";
+import { formatTimestamp } from "../utils/timeFormat";
 
 /**
  * Displays the list of clips that have been added. Each clip shows its
@@ -64,9 +65,9 @@ const ClipList: React.FC = () => {
             <tr>
               <th style={tableCellStyle}>Select</th>
               <th style={tableCellStyle}>Name</th>
-              <th style={tableCellStyle}>In (s)</th>
-              <th style={tableCellStyle}>Out (s)</th>
-              <th style={tableCellStyle}>Duration (s)</th>
+              <th style={tableCellStyle}>In</th>
+              <th style={tableCellStyle}>Out</th>
+              <th style={tableCellStyle}>Duration</th>
               <th style={tableCellStyle}>Actions</th>
             </tr>
           </thead>
@@ -104,9 +105,9 @@ const ClipList: React.FC = () => {
                     </span>
                   )}
                 </td>
-                <td style={tableCellStyle}>{clip.inSeconds.toFixed(2)}</td>
-                <td style={tableCellStyle}>{clip.outSeconds.toFixed(2)}</td>
-                <td style={tableCellStyle}>{(clip.outSeconds - clip.inSeconds).toFixed(2)}</td>
+                <td style={tableCellStyle}>{formatTimestamp(clip.inSeconds)}</td>
+                <td style={tableCellStyle}>{formatTimestamp(clip.outSeconds)}</td>
+                <td style={tableCellStyle}>{formatTimestamp(clip.outSeconds - clip.inSeconds)}</td>
                 <td style={{ ...tableCellStyle, textAlign: "center", whiteSpace: "nowrap" }}>
                   <button
                     onClick={() => startEditing(clip.id, clip.name)}

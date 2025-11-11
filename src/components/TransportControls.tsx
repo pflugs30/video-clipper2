@@ -1,5 +1,6 @@
 import React from "react";
 import { useProjectStore } from "../state/projectStore";
+import { formatTimestamp } from "../utils/timeFormat";
 
 /**
  * Simple transport control buttons for marking in/out and adding a clip.
@@ -8,13 +9,6 @@ import { useProjectStore } from "../state/projectStore";
  */
 const TransportControls: React.FC = () => {
   const projectStore = useProjectStore();
-
-  const formatTime = (seconds: number | null) => {
-    if (seconds === null) return "--:--";
-    const mins = Math.floor(seconds / 60);
-    const secs = (seconds % 60).toFixed(2);
-    return `${mins}:${secs.padStart(5, "0")}`;
-  };
 
   const buttonStyle = {
     padding: "8px 12px",
@@ -62,12 +56,12 @@ const TransportControls: React.FC = () => {
           Clear Marks (c)
         </button>
         <span style={{ fontSize: "14px", marginLeft: "8px" }}>
-          <span style={{ fontWeight: 600 }}>In:</span> {formatTime(projectStore.markInTime)}
-          <span style={{ marginLeft: "16px", fontWeight: 600 }}>Out:</span> {formatTime(projectStore.markOutTime)}
+          <span style={{ fontWeight: 600 }}>In:</span> {formatTimestamp(projectStore.markInTime)}
+          <span style={{ marginLeft: "16px", fontWeight: 600 }}>Out:</span> {formatTimestamp(projectStore.markOutTime)}
           {projectStore.markInTime !== null && projectStore.markOutTime !== null && (
             <>
               <span style={{ marginLeft: "16px", fontWeight: 600 }}>Duration:</span>{" "}
-              {(projectStore.markOutTime - projectStore.markInTime).toFixed(2)}s
+              {formatTimestamp(projectStore.markOutTime - projectStore.markInTime)}
             </>
           )}
         </span>
