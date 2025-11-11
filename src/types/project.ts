@@ -3,7 +3,7 @@
  * Used for saving and loading video clipper projects.
  */
 
-import { Clip } from "../state/projectStore";
+import { Clip } from "./clip";
 import { Event } from "./event";
 
 /**

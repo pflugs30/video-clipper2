@@ -1,13 +1,6 @@
 import React, { createContext, useContext, useState } from "react";
 import { ProjectData, isValidProjectData, isSupportedVersion, PROJECT_FILE_VERSION } from "../types/project";
-
-// Definition of a clip. Each clip has an ID, a name, and in/out times in seconds.
-export interface Clip {
-  id: string;
-  name: string;
-  inSeconds: number;
-  outSeconds: number;
-}
+import { Clip } from "../types/clip";
 
 // The shape of the state and methods provided by the project store.
 interface ProjectState {
