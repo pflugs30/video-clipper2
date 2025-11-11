@@ -103,11 +103,14 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
     if (markInTime === null || markOutTime === null || markOutTime <= markInTime) {
       return;
     }
+    const now = new Date();
     const newClip: Clip = {
       id: uniqueId(),
       name: `Clip ${clips.length + 1}`,
       inSeconds: markInTime,
       outSeconds: markOutTime,
+      createdOn: now,
+      modifiedOn: now,
     };
     setClips([...clips, newClip]);
     setIsDirty(true);

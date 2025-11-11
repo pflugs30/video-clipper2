@@ -169,15 +169,18 @@ export interface Clip {
 
   /**
    * Timestamp when the clip was created.
+   * Automatically set when the clip is first created.
    * @example new Date("2025-11-11T10:30:00Z")
    */
-  createdOn?: Date;
+  createdOn: Date;
 
   /**
    * Timestamp when the clip was last modified.
+   * Should be updated whenever any field is changed.
+   * Must be greater than or equal to createdOn.
    * @example new Date("2025-11-11T14:45:00Z")
    */
-  modifiedOn?: Date;
+  modifiedOn: Date;
 }
 
 /**
@@ -294,11 +297,18 @@ export function isValidClip(obj: unknown): obj is Clip {
     return false;
   }
 
-  if (clip.createdOn !== undefined && (!(clip.createdOn instanceof Date) || isNaN(clip.createdOn.getTime()))) {
+  // Validate required timestamps
+  if (
+    !(clip.createdOn instanceof Date) ||
+    isNaN(clip.createdOn.getTime()) ||
+    !(clip.modifiedOn instanceof Date) ||
+    isNaN(clip.modifiedOn.getTime())
+  ) {
     return false;
   }
 
-  if (clip.modifiedOn !== undefined && (!(clip.modifiedOn instanceof Date) || isNaN(clip.modifiedOn.getTime()))) {
+  // Validate modifiedOn >= createdOn
+  if (clip.modifiedOn < clip.createdOn) {
     return false;
   }
 
@@ -341,11 +351,14 @@ export function formatClipTimeRange(clip: Clip, precision: number = 1): string {
  * newClip.name = "User-defined name";
  */
 export function createDefaultClip(): Clip {
+  const now = new Date();
   return {
     id: "",
     name: "",
     inSeconds: 0,
     outSeconds: 0,
+    createdOn: now,
+    modifiedOn: now,
   };
 }
 

@@ -80,8 +80,8 @@ Represents a video clip segment extracted from an event recording. Each clip has
 | `description`                | `string`  |    No    | Detailed summary of the clip                                          |
 | `tags`                       | `string`  |    No    | Series of tags annotating the clip                                    |
 | `comments`                   | `string`  |    No    | User-provided comments about the clip                                 |
-| `createdOn`                  | `Date`    |    No    | Timestamp when the clip was created                                   |
-| `modifiedOn`                 | `Date`    |    No    | Timestamp when the clip was last modified                             |
+| `createdOn`                  | `Date`    |   Yes    | Timestamp when the clip was created                                   |
+| `modifiedOn`                 | `Date`    |   Yes    | Timestamp when the clip was last modified                             |
 
 ---
 
@@ -255,8 +255,9 @@ const clips: Clip[] = [
 6. **Optional String Fields:** When provided, string fields (`period`, `clockTime`, `officialPosition`, `officialName`, `callType`, `wasCorrectDecision`, `wasCorrectOfficialPosition`) must not be empty strings
 7. **Optional Number Fields:** When provided, `clipIndexNumber` must be a valid number
 8. **Optional Boolean Fields:** When provided, `wasShooting`, `wasMultipleWhistles`, and `shouldReview` must be boolean values
-9. **Optional Date Fields:** When provided, `createdOn` and `modifiedOn` must be valid Date objects
-10. **Call Object:** When provided, must be a valid Call object with all required fields
+9. **Timestamps:** `createdOn` and `modifiedOn` are required and must be valid Date objects
+10. **Timestamp Relationship:** `modifiedOn` must be >= `createdOn`
+11. **Call Object:** When provided, must be a valid Call object with all required fields
 
 ### Call Validation
 
@@ -270,6 +271,7 @@ const clips: Clip[] = [
 
 | Date       | Version | Changes                                                                  |
 | ---------- | ------- | ------------------------------------------------------------------------ |
+| 2025-11-11 | 1.6     | Made `createdOn` and `modifiedOn` required fields for Clip               |
 | 2025-11-11 | 1.5     | Removed `eventId` from Clip (use other methods to link clips to events)  |
 | 2025-11-11 | 1.4     | Changed `callId` from number to Call object; added Call and CallCategory |
 | 2025-11-11 | 1.3     | Added 18 optional fields to Clip from Access database migration          |
