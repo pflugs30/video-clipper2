@@ -20,7 +20,7 @@ This repository contains a minimal starting point for a desktop video clipping t
 - **c** – Clear Marks (reset in/out points)
 
 ### Video Playback Controls
-- **Space** – Play/Pause
+- **Space** or **k** – Play/Pause
 - **Left Arrow** – Skip backward 5 seconds
 - **Right Arrow** – Skip forward 5 seconds
 - **Ctrl + Left Arrow** – Skip backward 15 seconds

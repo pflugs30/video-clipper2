@@ -78,6 +78,18 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ source }) => {
 
   /**
    * Handle keyboard shortcuts for clipping operations and video playback controls.
+   *
+   * Keyboard shortcuts:
+   * - i: Mark In point
+   * - o: Mark Out point
+   * - a: Add clip from current marks
+   * - c: Clear marks
+   * - Space or k: Play/Pause
+   * - Shift + Left/Right Arrow: Decrease/Increase playback speed
+   * - Left/Right Arrow: Skip backward/forward 5 seconds (15 with Ctrl)
+   * - , / .: Move backward/forward one frame
+   * - f: Toggle fullscreen
+   * - m: Toggle mute
    */
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
@@ -99,7 +111,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ source }) => {
         projectStore.clearMarks();
       }
       // Playback control shortcuts
-      else if (e.key === " ") {
+      else if (e.key === " " || e.key === "k" || e.key === "K") {
         e.preventDefault();
         if (player.paused()) {
           player.play();
@@ -110,13 +122,19 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ source }) => {
         e.preventDefault();
         const currentRate = player.playbackRate();
         if (typeof currentRate === "number") {
-          player.playbackRate(Math.max(0.25, currentRate - 0.25));
+          const newRate = Math.max(0.25, currentRate - 0.25);
+          player.playbackRate(newRate);
+          setLocalPlaybackSpeed(newRate);
+          projectStore.setPlaybackSpeed(newRate);
         }
       } else if (e.key === "ArrowRight" && e.shiftKey) {
         e.preventDefault();
         const currentRate = player.playbackRate();
         if (typeof currentRate === "number") {
-          player.playbackRate(Math.min(2, currentRate + 0.25));
+          const newRate = Math.min(2, currentRate + 0.25);
+          player.playbackRate(newRate);
+          setLocalPlaybackSpeed(newRate);
+          projectStore.setPlaybackSpeed(newRate);
         }
       } else if (e.key === "ArrowLeft") {
         e.preventDefault();
@@ -160,7 +178,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ source }) => {
         player.muted(!player.muted());
       }
     },
-    [projectStore]
+    [projectStore, localPlaybackSpeed]
   );
 
   // Attach/detach the keyboard listener on mount/unmount.
