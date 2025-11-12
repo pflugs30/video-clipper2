@@ -71,6 +71,7 @@ const App: React.FC = () => {
         currentTime={projectStore.currentTime}
         markInTime={projectStore.markInTime}
         markOutTime={projectStore.markOutTime}
+        event={projectStore.event}
       />
       <div style={{ padding: "16px", height: "100vh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
         <div

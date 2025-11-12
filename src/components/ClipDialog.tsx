@@ -5,7 +5,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { Clip } from "../types/clip";
-import { Call } from "../types/call";
+import { Event } from "../types/event";
 import { CALLS } from "../data/calls";
 
 interface ClipDialogProps {
@@ -23,6 +23,8 @@ interface ClipDialogProps {
   markInTime: number | null;
   /** Mark Out time from transport controls */
   markOutTime: number | null;
+  /** Event data containing officiating crew */
+  event: Event | null;
 }
 
 /**
@@ -36,6 +38,7 @@ const ClipDialog: React.FC<ClipDialogProps> = ({
   currentTime,
   markInTime,
   markOutTime,
+  event,
 }) => {
   const [formData, setFormData] = useState<Partial<Clip>>({});
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -516,10 +519,9 @@ const ClipDialog: React.FC<ClipDialogProps> = ({
                     >
                       Official Name
                     </label>
-                    <input
-                      type="text"
+                    <select
                       value={formData.officialName || ""}
-                      onChange={(e) => handleChange("officialName", e.target.value)}
+                      onChange={(e) => handleChange("officialName", e.target.value || undefined)}
                       style={{
                         width: "100%",
                         padding: "8px 12px",
@@ -527,8 +529,14 @@ const ClipDialog: React.FC<ClipDialogProps> = ({
                         borderRadius: "4px",
                         fontSize: "14px",
                       }}
-                      placeholder="Official's name"
-                    />
+                    >
+                      <option value="">Select official...</option>
+                      {event?.officiatingCrew?.map((official, index) => (
+                        <option key={index} value={official.name}>
+                          {official.name}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                   <div style={{ flex: 1 }}>
                     <label
