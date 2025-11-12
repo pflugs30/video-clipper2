@@ -137,7 +137,6 @@ const EventDetails: React.FC = () => {
   return (
     <div
       style={{
-        marginTop: "24px",
         padding: "16px",
         border: "1px solid #d1d5db",
         borderRadius: "8px",

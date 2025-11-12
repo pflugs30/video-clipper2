@@ -55,10 +55,9 @@ const ClipList: React.FC = () => {
   };
 
   return (
-    <div style={{ marginTop: "16px" }}>
-      <h2 style={{ fontSize: "20px", fontWeight: 600, marginBottom: "8px" }}>Clips</h2>
+    <div>
       {projectStore.clips.length === 0 ? (
-        <p>No clips added yet. Use Mark In/Out (i/o) and press `a` to add one.</p>
+        <p style={{ margin: 0 }}>No clips added yet. Use Mark In/Out (i/o) and press `a` to add one.</p>
       ) : (
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "14px" }}>
           <thead>

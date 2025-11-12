@@ -3,10 +3,18 @@
  * Tailwind CSS and include the appropriate directives here. The video.js
  * CSS is imported in the VideoPlayer component.
  */
-body {
+html, body {
   margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
   font-family: sans-serif;
   background-color: #f9f9f9;
+}
+
+#root {
+  height: 100%;
+  overflow: hidden;
 }
 
 .video-js {

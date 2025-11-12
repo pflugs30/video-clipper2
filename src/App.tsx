@@ -61,8 +61,16 @@ const App: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: "16px", height: "100vh", display: "flex", flexDirection: "column" }}>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+    <div style={{ padding: "16px", height: "100vh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "16px",
+          flexShrink: 0,
+        }}
+      >
         <h1 style={{ fontSize: "24px", fontWeight: "bold", margin: 0 }}>Video Clipper</h1>
         <div style={{ display: "flex", gap: "8px" }}>
           <button
@@ -109,9 +117,9 @@ const App: React.FC = () => {
           Open Video
         </button>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", flex: 1, overflow: "hidden" }}>
+        <div style={{ display: "flex", flexDirection: "column", flex: 1, overflow: "hidden", minHeight: 0 }}>
           {/* Tab Navigation */}
-          <div style={{ display: "flex", borderBottom: "2px solid #e5e7eb", marginBottom: "16px" }}>
+          <div style={{ display: "flex", borderBottom: "2px solid #e5e7eb", marginBottom: "16px", flexShrink: 0 }}>
             <button
               style={{
                 padding: "12px 24px",
@@ -148,11 +156,25 @@ const App: React.FC = () => {
 
           {/* Tab Content */}
           {activeTab === "clips" ? (
-            <div style={{ display: "flex", flex: 1, gap: "16px", overflow: "hidden" }}>
+            <div style={{ display: "flex", flex: 1, gap: "16px", overflow: "hidden", minHeight: 0 }}>
               {/* Left side: Video Player and Controls */}
-              <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
-                <VideoPlayer source={videoURL} />
-                <TransportControls />
+              <div
+                style={{
+                  flex: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                  minWidth: 0,
+                  minHeight: 0,
+                  maxHeight: "100%",
+                  overflow: "hidden",
+                }}
+              >
+                <div style={{ flex: "0 1 auto", minHeight: 0, maxHeight: "calc(100% - 200px)", overflow: "hidden" }}>
+                  <VideoPlayer source={videoURL} />
+                </div>
+                <div style={{ flexShrink: 0 }}>
+                  <TransportControls />
+                </div>
                 <button
                   style={{
                     marginTop: "16px",
@@ -162,6 +184,7 @@ const App: React.FC = () => {
                     borderRadius: "4px",
                     border: "none",
                     cursor: projectStore.selectedClips.length === 0 ? "not-allowed" : "pointer",
+                    flexShrink: 0,
                   }}
                   onClick={handleExportSelected}
                   disabled={projectStore.selectedClips.length === 0}
@@ -171,12 +194,17 @@ const App: React.FC = () => {
               </div>
 
               {/* Right side: Clips List */}
-              <div style={{ width: "384px", flexShrink: 0, overflowY: "auto" }}>
-                <ClipList />
+              <div style={{ width: "450px", flexShrink: 0, display: "flex", flexDirection: "column", minHeight: 0 }}>
+                <h2 style={{ fontSize: "18px", fontWeight: "bold", marginBottom: "12px", marginTop: 0, flexShrink: 0 }}>
+                  Clips
+                </h2>
+                <div style={{ flex: 1, overflowY: "auto", minHeight: 0 }}>
+                  <ClipList />
+                </div>
               </div>
             </div>
           ) : (
-            <div style={{ flex: 1, overflowY: "auto" }}>
+            <div style={{ flex: 1, overflowY: "auto", minHeight: 0 }}>
               <EventDetails />
             </div>
           )}
