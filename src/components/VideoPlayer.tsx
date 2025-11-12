@@ -96,6 +96,16 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ source }) => {
       const player = playerRef.current;
       if (!player) return;
 
+      // Don't trigger shortcuts if user is typing in an input field, textarea, or contenteditable element
+      const target = e.target as HTMLElement;
+      const isTyping =
+        target.tagName === "INPUT" ||
+        target.tagName === "TEXTAREA" ||
+        target.tagName === "SELECT" ||
+        target.isContentEditable;
+
+      if (isTyping) return;
+
       // Clipping shortcuts
       if (e.key === "i" || e.key === "I") {
         e.preventDefault();
