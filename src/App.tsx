@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import VideoPlayer from "./components/VideoPlayer";
 import ClipList from "./components/ClipList";
 import TransportControls from "./components/TransportControls";
+import EventDetails from "./components/EventDetails";
 import { useProjectStore } from "./state/projectStore";
 
 /**
@@ -107,31 +108,39 @@ const App: React.FC = () => {
           Open Video
         </button>
       ) : (
-        <div style={{ display: "flex", flex: 1, gap: "16px", overflow: "hidden" }}>
-          {/* Left side: Video Player and Controls */}
-          <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
-            <VideoPlayer source={videoURL} />
-            <TransportControls />
-            <button
-              style={{
-                marginTop: "16px",
-                backgroundColor: projectStore.selectedClips.length === 0 ? "#9ca3af" : "#16a34a",
-                color: "white",
-                padding: "8px 16px",
-                borderRadius: "4px",
-                border: "none",
-                cursor: projectStore.selectedClips.length === 0 ? "not-allowed" : "pointer",
-              }}
-              onClick={handleExportSelected}
-              disabled={projectStore.selectedClips.length === 0}
-            >
-              Export Selected Clips ({projectStore.selectedClips.length})
-            </button>
+        <div style={{ display: "flex", flexDirection: "column", flex: 1, overflow: "hidden" }}>
+          {/* Top section: Video Player and Clips */}
+          <div style={{ display: "flex", flex: 1, gap: "16px", overflow: "hidden", minHeight: 0 }}>
+            {/* Left side: Video Player and Controls */}
+            <div style={{ flex: 1, display: "flex", flexDirection: "column", minWidth: 0 }}>
+              <VideoPlayer source={videoURL} />
+              <TransportControls />
+              <button
+                style={{
+                  marginTop: "16px",
+                  backgroundColor: projectStore.selectedClips.length === 0 ? "#9ca3af" : "#16a34a",
+                  color: "white",
+                  padding: "8px 16px",
+                  borderRadius: "4px",
+                  border: "none",
+                  cursor: projectStore.selectedClips.length === 0 ? "not-allowed" : "pointer",
+                }}
+                onClick={handleExportSelected}
+                disabled={projectStore.selectedClips.length === 0}
+              >
+                Export Selected Clips ({projectStore.selectedClips.length})
+              </button>
+            </div>
+
+            {/* Right side: Clips List */}
+            <div style={{ width: "384px", flexShrink: 0, overflowY: "auto" }}>
+              <ClipList />
+            </div>
           </div>
 
-          {/* Right side: Clips List */}
-          <div style={{ width: "384px", flexShrink: 0, overflowY: "auto" }}>
-            <ClipList />
+          {/* Bottom section: Event Details */}
+          <div style={{ overflowY: "auto", maxHeight: "400px" }}>
+            <EventDetails />
           </div>
         </div>
       )}

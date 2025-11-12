@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState } from "react";
 import { ProjectData, isValidProjectData, isSupportedVersion, PROJECT_FILE_VERSION } from "../types/project";
 import { Clip } from "../types/clip";
+import { Event, Gender, AgeLevel, Sport } from "../types/event";
 
 // The shape of the state and methods provided by the project store.
 interface ProjectState {
@@ -13,6 +14,7 @@ interface ProjectState {
   videoSourcePath: string | null;
   currentProjectPath: string | null;
   isDirty: boolean;
+  event: Event | null;
   setCurrentTime: (time: number) => void;
   setPlaybackSpeed: (speed: number) => void;
   markIn: (time?: number) => void;
@@ -25,6 +27,7 @@ interface ProjectState {
   deleteClip: (id: string) => void;
   updateClip: (id: string, updates: Partial<Clip>) => void;
   addSource: (path: string) => void;
+  updateEvent: (updates: Partial<Omit<Event, "createdOn" | "modifiedOn">>) => void;
   saveProject: () => Promise<void>;
   loadProject: () => Promise<string | null>;
 }
@@ -63,6 +66,8 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [currentProjectPath, setCurrentProjectPath] = useState<string | null>(null);
   // Track if the project has unsaved changes.
   const [isDirty, setIsDirty] = useState<boolean>(false);
+  // Event metadata for the project.
+  const [event, setEvent] = useState<Event | null>(null);
 
   /**
    * Mark the starting time of a clip. If provided a time, that value is used;
@@ -183,6 +188,43 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   /**
+   * Update the event metadata. Creates a new event if none exists,
+   * or updates the existing one while preserving timestamps.
+   */
+  const updateEvent = (updates: Partial<Omit<Event, "createdOn" | "modifiedOn">>) => {
+    const now = new Date();
+
+    if (event) {
+      // Update existing event
+      setEvent({
+        ...event,
+        ...updates,
+        modifiedOn: now,
+      });
+    } else {
+      // Create new event with default values for required fields
+      const newEvent: Event = {
+        date: updates.date || new Date(),
+        gender: updates.gender || Gender.Boys,
+        ageLevel: updates.ageLevel || AgeLevel.Varsity,
+        sport: updates.sport || Sport.Basketball,
+        eventName: updates.eventName,
+        location: updates.location,
+        homeTeam: updates.homeTeam,
+        awayTeam: updates.awayTeam,
+        officiatingCrew: updates.officiatingCrew || [],
+        videoLink: updates.videoLink,
+        notes: updates.notes,
+        createdOn: now,
+        modifiedOn: now,
+      };
+      setEvent(newEvent);
+    }
+
+    setIsDirty(true);
+  };
+
+  /**
    * Save the current project to a JSON file. If the project has never been saved,
    * prompts the user to choose a save location. Otherwise, saves to the current path.
    */
@@ -191,6 +233,22 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       // If no video source, nothing to save
       if (!videoSourcePath) {
         alert("No video source loaded. Please open a video first.");
+        return;
+      }
+
+      // Validate required event fields before saving
+      if (!event) {
+        alert("Please fill out the Event Details before saving.");
+        return;
+      }
+
+      if (!event.date) {
+        alert("Event date is required. Please fill out the Event Details.");
+        return;
+      }
+
+      if (!event.officiatingCrew || event.officiatingCrew.length === 0) {
+        alert("At least one official is required. Please fill out the Event Details.");
         return;
       }
 
@@ -205,7 +263,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setCurrentProjectPath(savePath);
       }
 
-      // Build project data
+      // Build project data with event - convert Dates to ISO strings for JSON
       const projectData: ProjectData = {
         version: PROJECT_FILE_VERSION,
         appVersion: "1.0.0", // TODO: Get from package.json
@@ -213,6 +271,12 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
         modified: new Date().toISOString(),
         videoSource: {
           path: videoSourcePath,
+        },
+        event: {
+          ...event,
+          date: event.date instanceof Date ? event.date : new Date(event.date),
+          createdOn: event.createdOn instanceof Date ? event.createdOn : new Date(event.createdOn),
+          modifiedOn: event.modifiedOn instanceof Date ? event.modifiedOn : new Date(event.modifiedOn),
         },
         clips: clips,
       };
@@ -295,6 +359,18 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
       setMarkOutTime(null);
       setIsDirty(false);
 
+      // Load event data if present, converting ISO strings back to Date objects
+      if (data.event) {
+        setEvent({
+          ...data.event,
+          date: new Date(data.event.date),
+          createdOn: new Date(data.event.createdOn),
+          modifiedOn: new Date(data.event.modifiedOn),
+        });
+      } else {
+        setEvent(null);
+      }
+
       console.log("Project loaded successfully from:", filePath);
 
       // Return the video source path so App can load the video
@@ -318,6 +394,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
         videoSourcePath,
         currentProjectPath,
         isDirty,
+        event,
         setCurrentTime,
         setPlaybackSpeed,
         markIn,
@@ -330,6 +407,7 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
         deleteClip,
         updateClip,
         addSource,
+        updateEvent,
         saveProject,
         loadProject,
       }}
