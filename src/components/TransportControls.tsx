@@ -34,13 +34,8 @@ const TransportControls: React.FC = () => {
           Mark Out (o)
         </button>
         <button
-          style={
-            projectStore.markInTime === null || projectStore.markOutTime === null
-              ? { ...disabledButtonStyle, backgroundColor: "#93c5fd", color: "white" }
-              : { ...buttonStyle, backgroundColor: "#3b82f6", color: "white" }
-          }
-          onClick={() => projectStore.addClipFromMarks()}
-          disabled={projectStore.markInTime === null || projectStore.markOutTime === null}
+          style={{ ...buttonStyle, backgroundColor: "#3b82f6", color: "white" }}
+          onClick={() => projectStore.openClipDialog()}
         >
           Add Clip (a)
         </button>

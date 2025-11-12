@@ -15,6 +15,8 @@ interface ProjectState {
   currentProjectPath: string | null;
   isDirty: boolean;
   event: Event | null;
+  clipDialogOpen: boolean;
+  clipBeingEdited: Clip | null;
   setCurrentTime: (time: number) => void;
   setPlaybackSpeed: (speed: number) => void;
   markIn: (time?: number) => void;
@@ -30,6 +32,9 @@ interface ProjectState {
   updateEvent: (updates: Partial<Omit<Event, "createdOn" | "modifiedOn">>) => void;
   saveProject: () => Promise<void>;
   loadProject: () => Promise<string | null>;
+  openClipDialog: (clip?: Clip) => void;
+  closeClipDialog: () => void;
+  saveClipFromDialog: (clip: Clip) => void;
 }
 
 // Create a context for the project store. It will be defined at runtime in the provider.
@@ -68,6 +73,9 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [isDirty, setIsDirty] = useState<boolean>(false);
   // Event metadata for the project.
   const [event, setEvent] = useState<Event | null>(null);
+  // Clip dialog state
+  const [clipDialogOpen, setClipDialogOpen] = useState<boolean>(false);
+  const [clipBeingEdited, setClipBeingEdited] = useState<Clip | null>(null);
 
   /**
    * Mark the starting time of a clip. If provided a time, that value is used;
@@ -297,6 +305,42 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
   };
 
   /**
+   * Open the clip dialog for adding a new clip or editing an existing one.
+   * @param clip - The clip to edit, or undefined for a new clip
+   */
+  const openClipDialog = (clip?: Clip) => {
+    setClipBeingEdited(clip || null);
+    setClipDialogOpen(true);
+  };
+
+  /**
+   * Close the clip dialog without saving.
+   */
+  const closeClipDialog = () => {
+    setClipDialogOpen(false);
+    setClipBeingEdited(null);
+  };
+
+  /**
+   * Save a clip from the dialog. If the clip already exists (has matching ID),
+   * update it; otherwise add it as a new clip.
+   */
+  const saveClipFromDialog = (clip: Clip) => {
+    const existingIndex = clips.findIndex((c) => c.id === clip.id);
+    if (existingIndex >= 0) {
+      // Update existing clip
+      const updatedClips = [...clips];
+      updatedClips[existingIndex] = { ...clip, modifiedOn: new Date() };
+      setClips(updatedClips);
+    } else {
+      // Add new clip
+      setClips([...clips, clip]);
+    }
+    setIsDirty(true);
+    closeClipDialog();
+  };
+
+  /**
    * Load a project from a JSON file. Prompts the user to select a file,
    * validates the data, and replaces the current project state.
    * Returns the video source path on success, null otherwise.
@@ -395,6 +439,8 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
         currentProjectPath,
         isDirty,
         event,
+        clipDialogOpen,
+        clipBeingEdited,
         setCurrentTime,
         setPlaybackSpeed,
         markIn,
@@ -410,6 +456,9 @@ export const ProjectProvider: React.FC<{ children: React.ReactNode }> = ({ child
         updateEvent,
         saveProject,
         loadProject,
+        openClipDialog,
+        closeClipDialog,
+        saveClipFromDialog,
       }}
     >
       {children}

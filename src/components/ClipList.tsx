@@ -1,16 +1,14 @@
-import React, { useState } from "react";
+import React from "react";
 import { useProjectStore } from "../state/projectStore";
 import { formatTimestamp } from "../utils/timeFormat";
 
 /**
  * Displays the list of clips that have been added. Each clip shows its
  * name, in/out times, and duration. A checkbox allows selecting multiple
- * clips for export. Clips can be renamed or deleted.
+ * clips for export. Clips can be edited or deleted.
  */
 const ClipList: React.FC = () => {
   const projectStore = useProjectStore();
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [editingName, setEditingName] = useState<string>("");
 
   const handleSelect = (id: string) => {
     projectStore.toggleClipSelection(id);
@@ -22,22 +20,11 @@ const ClipList: React.FC = () => {
     }
   };
 
-  const startEditing = (id: string, currentName: string) => {
-    setEditingId(id);
-    setEditingName(currentName);
-  };
-
-  const saveEdit = (id: string) => {
-    if (editingName.trim()) {
-      projectStore.updateClip(id, { name: editingName.trim() });
+  const handleEdit = (id: string) => {
+    const clip = projectStore.clips.find((c) => c.id === id);
+    if (clip) {
+      projectStore.openClipDialog(clip);
     }
-    setEditingId(null);
-    setEditingName("");
-  };
-
-  const cancelEdit = () => {
-    setEditingId(null);
-    setEditingName("");
   };
 
   const tableCellStyle = {
@@ -81,37 +68,16 @@ const ClipList: React.FC = () => {
                   />
                 </td>
                 <td style={tableCellStyle}>
-                  {editingId === clip.id ? (
-                    <input
-                      type="text"
-                      value={editingName}
-                      onChange={(e) => setEditingName(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") saveEdit(clip.id);
-                        if (e.key === "Escape") cancelEdit();
-                      }}
-                      onBlur={() => saveEdit(clip.id)}
-                      style={{ width: "100%", padding: "2px 4px", border: "1px solid #d1d5db", borderRadius: "2px" }}
-                      autoFocus
-                    />
-                  ) : (
-                    <span
-                      onDoubleClick={() => startEditing(clip.id, clip.name)}
-                      style={{ cursor: "pointer" }}
-                      title="Double-click to edit"
-                    >
-                      {clip.name}
-                    </span>
-                  )}
+                  <span>{clip.name}</span>
                 </td>
                 <td style={tableCellStyle}>{formatTimestamp(clip.inSeconds)}</td>
                 <td style={tableCellStyle}>{formatTimestamp(clip.outSeconds)}</td>
                 <td style={tableCellStyle}>{formatTimestamp(clip.outSeconds - clip.inSeconds)}</td>
                 <td style={{ ...tableCellStyle, textAlign: "center", whiteSpace: "nowrap" }}>
                   <button
-                    onClick={() => startEditing(clip.id, clip.name)}
+                    onClick={() => handleEdit(clip.id)}
                     style={{ ...buttonStyle, backgroundColor: "#3b82f6", marginRight: "4px" }}
-                    title="Edit name"
+                    title="Edit clip"
                   >
                     ✏️
                   </button>

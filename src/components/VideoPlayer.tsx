@@ -115,7 +115,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ source }) => {
         projectStore.markOut(player.currentTime());
       } else if (e.key === "a" || e.key === "A") {
         e.preventDefault();
-        projectStore.addClipFromMarks();
+        projectStore.openClipDialog();
       } else if (e.key === "c" || e.key === "C") {
         e.preventDefault();
         projectStore.clearMarks();
