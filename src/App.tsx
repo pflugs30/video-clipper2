@@ -69,6 +69,8 @@ const App: React.FC = () => {
         onCancel={projectStore.closeClipDialog}
         onSave={projectStore.saveClipFromDialog}
         currentTime={projectStore.currentTime}
+        markInTime={projectStore.markInTime}
+        markOutTime={projectStore.markOutTime}
       />
       <div style={{ padding: "16px", height: "100vh", display: "flex", flexDirection: "column", overflow: "hidden" }}>
         <div

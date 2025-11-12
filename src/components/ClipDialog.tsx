@@ -19,12 +19,24 @@ interface ClipDialogProps {
   onSave: (clip: Clip) => void;
   /** Current video time to use as default for new clips */
   currentTime: number;
+  /** Mark In time from transport controls */
+  markInTime: number | null;
+  /** Mark Out time from transport controls */
+  markOutTime: number | null;
 }
 
 /**
  * ClipDialog component - a modal form for creating and editing clips.
  */
-const ClipDialog: React.FC<ClipDialogProps> = ({ isOpen, clip, onCancel, onSave, currentTime }) => {
+const ClipDialog: React.FC<ClipDialogProps> = ({
+  isOpen,
+  clip,
+  onCancel,
+  onSave,
+  currentTime,
+  markInTime,
+  markOutTime,
+}) => {
   const [formData, setFormData] = useState<Partial<Clip>>({});
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const dialogRef = useRef<HTMLDivElement>(null);
@@ -37,12 +49,14 @@ const ClipDialog: React.FC<ClipDialogProps> = ({ isOpen, clip, onCancel, onSave,
         // Editing existing clip
         setFormData({ ...clip });
       } else {
-        // Creating new clip - use current time as default
+        // Creating new clip - use mark in/out times if available, otherwise current time
+        const inTime = markInTime !== null ? markInTime : currentTime;
+        const outTime = markOutTime !== null ? markOutTime : currentTime;
         setFormData({
           id: generateClipId(),
           name: "",
-          inSeconds: currentTime,
-          outSeconds: currentTime,
+          inSeconds: inTime,
+          outSeconds: outTime,
           createdOn: new Date(),
           modifiedOn: new Date(),
         });
@@ -51,7 +65,7 @@ const ClipDialog: React.FC<ClipDialogProps> = ({ isOpen, clip, onCancel, onSave,
       // Focus the name input when dialog opens
       setTimeout(() => nameInputRef.current?.focus(), 0);
     }
-  }, [isOpen, clip, currentTime]);
+  }, [isOpen, clip, currentTime, markInTime, markOutTime]);
 
   // Handle Escape key to cancel
   useEffect(() => {
