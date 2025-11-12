@@ -39,6 +39,7 @@ const ClipDialog: React.FC<ClipDialogProps> = ({
 }) => {
   const [formData, setFormData] = useState<Partial<Clip>>({});
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [showAllFields, setShowAllFields] = useState<boolean>(false);
   const dialogRef = useRef<HTMLDivElement>(null);
   const nameInputRef = useRef<HTMLInputElement>(null);
 
@@ -412,97 +413,14 @@ const ClipDialog: React.FC<ClipDialogProps> = ({
             </div>
 
             {/* Call Details Section */}
-            <div style={{ marginBottom: "24px" }}>
-              <h3 style={{ margin: "0 0 12px 0", fontSize: "16px", fontWeight: "600", color: "#374151" }}>
-                Call Details
-              </h3>
+            {showAllFields && (
+              <div style={{ marginBottom: "24px" }}>
+                <h3 style={{ margin: "0 0 12px 0", fontSize: "16px", fontWeight: "600", color: "#374151" }}>
+                  Call Details
+                </h3>
 
-              {/* Call */}
-              <div style={{ marginBottom: "16px" }}>
-                <label
-                  style={{
-                    display: "block",
-                    marginBottom: "4px",
-                    fontSize: "14px",
-                    fontWeight: "500",
-                    color: "#374151",
-                  }}
-                >
-                  Call
-                </label>
-                <select
-                  value={formData.call?.id || ""}
-                  onChange={(e) => {
-                    const callId = parseInt(e.target.value);
-                    const selectedCall = CALLS.find((c) => c.id === callId);
-                    handleChange("call", selectedCall || undefined);
-                  }}
-                  style={{
-                    width: "100%",
-                    padding: "8px 12px",
-                    border: "1px solid #d1d5db",
-                    borderRadius: "4px",
-                    fontSize: "14px",
-                  }}
-                >
-                  <option value="">Select a call...</option>
-                  <optgroup label="Fouls">
-                    {CALLS.filter((c) => c.callCategoryId === "Foul").map((call) => (
-                      <option key={call.id} value={call.id}>
-                        {call.callName}
-                      </option>
-                    ))}
-                  </optgroup>
-                  <optgroup label="Violations">
-                    {CALLS.filter((c) => c.callCategoryId === "Violation").map((call) => (
-                      <option key={call.id} value={call.id}>
-                        {call.callName}
-                      </option>
-                    ))}
-                  </optgroup>
-                  <optgroup label="Miscellaneous">
-                    {CALLS.filter((c) => c.callCategoryId === "Miscellaneous").map((call) => (
-                      <option key={call.id} value={call.id}>
-                        {call.callName}
-                      </option>
-                    ))}
-                  </optgroup>
-                </select>
-              </div>
-
-              {/* Call Type */}
-              <div style={{ marginBottom: "16px" }}>
-                <label
-                  style={{
-                    display: "block",
-                    marginBottom: "4px",
-                    fontSize: "14px",
-                    fontWeight: "500",
-                    color: "#374151",
-                  }}
-                >
-                  Call Type
-                </label>
-                <select
-                  value={formData.callType || ""}
-                  onChange={(e) => handleChange("callType", e.target.value || undefined)}
-                  style={{
-                    width: "100%",
-                    padding: "8px 12px",
-                    border: "1px solid #d1d5db",
-                    borderRadius: "4px",
-                    fontSize: "14px",
-                  }}
-                >
-                  <option value="">Select...</option>
-                  <option value="Call">Call</option>
-                  <option value="Non-Call">Non-Call</option>
-                </select>
-              </div>
-
-              {/* Official Name and Position */}
-              <div style={{ display: "flex", gap: "12px", marginBottom: "16px" }}>
-                <div style={{ flex: 1 }}>
+                {/* Call */}
+                <div style={{ marginBottom: "16px" }}>
                   <label
                     style={{
                       display: "block",
@@ -512,12 +430,15 @@ const ClipDialog: React.FC<ClipDialogProps> = ({
                       color: "#374151",
                     }}
                   >
-                    Official Name
+                    Call
                   </label>
-                  <input
-                    type="text"
-                    value={formData.officialName || ""}
-                    onChange={(e) => handleChange("officialName", e.target.value)}
+                  <select
+                    value={formData.call?.id || ""}
+                    onChange={(e) => {
+                      const callId = parseInt(e.target.value);
+                      const selectedCall = CALLS.find((c) => c.id === callId);
+                      handleChange("call", selectedCall || undefined);
+                    }}
                     style={{
                       width: "100%",
                       padding: "8px 12px",
@@ -525,10 +446,34 @@ const ClipDialog: React.FC<ClipDialogProps> = ({
                       borderRadius: "4px",
                       fontSize: "14px",
                     }}
-                    placeholder="Official's name"
-                  />
+                  >
+                    <option value="">Select a call...</option>
+                    <optgroup label="Fouls">
+                      {CALLS.filter((c) => c.callCategoryId === "Foul").map((call) => (
+                        <option key={call.id} value={call.id}>
+                          {call.callName}
+                        </option>
+                      ))}
+                    </optgroup>
+                    <optgroup label="Violations">
+                      {CALLS.filter((c) => c.callCategoryId === "Violation").map((call) => (
+                        <option key={call.id} value={call.id}>
+                          {call.callName}
+                        </option>
+                      ))}
+                    </optgroup>
+                    <optgroup label="Miscellaneous">
+                      {CALLS.filter((c) => c.callCategoryId === "Miscellaneous").map((call) => (
+                        <option key={call.id} value={call.id}>
+                          {call.callName}
+                        </option>
+                      ))}
+                    </optgroup>
+                  </select>
                 </div>
-                <div style={{ flex: 1 }}>
+
+                {/* Call Type */}
+                <div style={{ marginBottom: "16px" }}>
                   <label
                     style={{
                       display: "block",
@@ -538,11 +483,11 @@ const ClipDialog: React.FC<ClipDialogProps> = ({
                       color: "#374151",
                     }}
                   >
-                    Official Position
+                    Call Type
                   </label>
                   <select
-                    value={formData.officialPosition || ""}
-                    onChange={(e) => handleChange("officialPosition", e.target.value || undefined)}
+                    value={formData.callType || ""}
+                    onChange={(e) => handleChange("callType", e.target.value || undefined)}
                     style={{
                       width: "100%",
                       padding: "8px 12px",
@@ -552,177 +497,239 @@ const ClipDialog: React.FC<ClipDialogProps> = ({
                     }}
                   >
                     <option value="">Select...</option>
-                    <option value="Lead">Lead</option>
-                    <option value="Trail">Trail</option>
-                    <option value="Center">Center</option>
+                    <option value="Call">Call</option>
+                    <option value="Non-Call">Non-Call</option>
+                  </select>
+                </div>
+
+                {/* Official Name and Position */}
+                <div style={{ display: "flex", gap: "12px", marginBottom: "16px" }}>
+                  <div style={{ flex: 1 }}>
+                    <label
+                      style={{
+                        display: "block",
+                        marginBottom: "4px",
+                        fontSize: "14px",
+                        fontWeight: "500",
+                        color: "#374151",
+                      }}
+                    >
+                      Official Name
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.officialName || ""}
+                      onChange={(e) => handleChange("officialName", e.target.value)}
+                      style={{
+                        width: "100%",
+                        padding: "8px 12px",
+                        border: "1px solid #d1d5db",
+                        borderRadius: "4px",
+                        fontSize: "14px",
+                      }}
+                      placeholder="Official's name"
+                    />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <label
+                      style={{
+                        display: "block",
+                        marginBottom: "4px",
+                        fontSize: "14px",
+                        fontWeight: "500",
+                        color: "#374151",
+                      }}
+                    >
+                      Official Position
+                    </label>
+                    <select
+                      value={formData.officialPosition || ""}
+                      onChange={(e) => handleChange("officialPosition", e.target.value || undefined)}
+                      style={{
+                        width: "100%",
+                        padding: "8px 12px",
+                        border: "1px solid #d1d5db",
+                        borderRadius: "4px",
+                        fontSize: "14px",
+                      }}
+                    >
+                      <option value="">Select...</option>
+                      <option value="Lead">Lead</option>
+                      <option value="Trail">Trail</option>
+                      <option value="Center">Center</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Evaluation Section */}
+            {showAllFields && (
+              <div style={{ marginBottom: "24px" }}>
+                <h3 style={{ margin: "0 0 12px 0", fontSize: "16px", fontWeight: "600", color: "#374151" }}>
+                  Evaluation
+                </h3>
+
+                {/* Checkboxes */}
+                <div style={{ marginBottom: "16px" }}>
+                  <label style={{ display: "flex", alignItems: "center", marginBottom: "8px", cursor: "pointer" }}>
+                    <input
+                      type="checkbox"
+                      checked={formData.wasShooting || false}
+                      onChange={(e) => handleChange("wasShooting", e.target.checked)}
+                      style={{ marginRight: "8px" }}
+                    />
+                    <span style={{ fontSize: "14px", color: "#374151" }}>Shooting situation</span>
+                  </label>
+                  <label style={{ display: "flex", alignItems: "center", marginBottom: "8px", cursor: "pointer" }}>
+                    <input
+                      type="checkbox"
+                      checked={formData.wasMultipleWhistles || false}
+                      onChange={(e) => handleChange("wasMultipleWhistles", e.target.checked)}
+                      style={{ marginRight: "8px" }}
+                    />
+                    <span style={{ fontSize: "14px", color: "#374151" }}>Multiple whistles</span>
+                  </label>
+                  <label style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
+                    <input
+                      type="checkbox"
+                      checked={formData.shouldReview || false}
+                      onChange={(e) => handleChange("shouldReview", e.target.checked)}
+                      style={{ marginRight: "8px" }}
+                    />
+                    <span style={{ fontSize: "14px", color: "#374151" }}>Should review with crew</span>
+                  </label>
+                </div>
+
+                {/* Correct Decision */}
+                <div style={{ marginBottom: "16px" }}>
+                  <label
+                    style={{
+                      display: "block",
+                      marginBottom: "4px",
+                      fontSize: "14px",
+                      fontWeight: "500",
+                      color: "#374151",
+                    }}
+                  >
+                    Correct Decision?
+                  </label>
+                  <select
+                    value={formData.wasCorrectDecision || ""}
+                    onChange={(e) => handleChange("wasCorrectDecision", e.target.value || undefined)}
+                    style={{
+                      width: "100%",
+                      padding: "8px 12px",
+                      border: "1px solid #d1d5db",
+                      borderRadius: "4px",
+                      fontSize: "14px",
+                    }}
+                  >
+                    <option value="">Select...</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                    <option value="Maybe">Maybe</option>
+                  </select>
+                </div>
+
+                {/* Correct Position */}
+                <div style={{ marginBottom: "16px" }}>
+                  <label
+                    style={{
+                      display: "block",
+                      marginBottom: "4px",
+                      fontSize: "14px",
+                      fontWeight: "500",
+                      color: "#374151",
+                    }}
+                  >
+                    Correct Official Position?
+                  </label>
+                  <select
+                    value={formData.wasCorrectOfficialPosition || ""}
+                    onChange={(e) => handleChange("wasCorrectOfficialPosition", e.target.value || undefined)}
+                    style={{
+                      width: "100%",
+                      padding: "8px 12px",
+                      border: "1px solid #d1d5db",
+                      borderRadius: "4px",
+                      fontSize: "14px",
+                    }}
+                  >
+                    <option value="">Select...</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                    <option value="Maybe">Maybe</option>
                   </select>
                 </div>
               </div>
-            </div>
-
-            {/* Evaluation Section */}
-            <div style={{ marginBottom: "24px" }}>
-              <h3 style={{ margin: "0 0 12px 0", fontSize: "16px", fontWeight: "600", color: "#374151" }}>
-                Evaluation
-              </h3>
-
-              {/* Checkboxes */}
-              <div style={{ marginBottom: "16px" }}>
-                <label style={{ display: "flex", alignItems: "center", marginBottom: "8px", cursor: "pointer" }}>
-                  <input
-                    type="checkbox"
-                    checked={formData.wasShooting || false}
-                    onChange={(e) => handleChange("wasShooting", e.target.checked)}
-                    style={{ marginRight: "8px" }}
-                  />
-                  <span style={{ fontSize: "14px", color: "#374151" }}>Shooting situation</span>
-                </label>
-                <label style={{ display: "flex", alignItems: "center", marginBottom: "8px", cursor: "pointer" }}>
-                  <input
-                    type="checkbox"
-                    checked={formData.wasMultipleWhistles || false}
-                    onChange={(e) => handleChange("wasMultipleWhistles", e.target.checked)}
-                    style={{ marginRight: "8px" }}
-                  />
-                  <span style={{ fontSize: "14px", color: "#374151" }}>Multiple whistles</span>
-                </label>
-                <label style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
-                  <input
-                    type="checkbox"
-                    checked={formData.shouldReview || false}
-                    onChange={(e) => handleChange("shouldReview", e.target.checked)}
-                    style={{ marginRight: "8px" }}
-                  />
-                  <span style={{ fontSize: "14px", color: "#374151" }}>Should review with crew</span>
-                </label>
-              </div>
-
-              {/* Correct Decision */}
-              <div style={{ marginBottom: "16px" }}>
-                <label
-                  style={{
-                    display: "block",
-                    marginBottom: "4px",
-                    fontSize: "14px",
-                    fontWeight: "500",
-                    color: "#374151",
-                  }}
-                >
-                  Correct Decision?
-                </label>
-                <select
-                  value={formData.wasCorrectDecision || ""}
-                  onChange={(e) => handleChange("wasCorrectDecision", e.target.value || undefined)}
-                  style={{
-                    width: "100%",
-                    padding: "8px 12px",
-                    border: "1px solid #d1d5db",
-                    borderRadius: "4px",
-                    fontSize: "14px",
-                  }}
-                >
-                  <option value="">Select...</option>
-                  <option value="Yes">Yes</option>
-                  <option value="No">No</option>
-                  <option value="Maybe">Maybe</option>
-                </select>
-              </div>
-
-              {/* Correct Position */}
-              <div style={{ marginBottom: "16px" }}>
-                <label
-                  style={{
-                    display: "block",
-                    marginBottom: "4px",
-                    fontSize: "14px",
-                    fontWeight: "500",
-                    color: "#374151",
-                  }}
-                >
-                  Correct Official Position?
-                </label>
-                <select
-                  value={formData.wasCorrectOfficialPosition || ""}
-                  onChange={(e) => handleChange("wasCorrectOfficialPosition", e.target.value || undefined)}
-                  style={{
-                    width: "100%",
-                    padding: "8px 12px",
-                    border: "1px solid #d1d5db",
-                    borderRadius: "4px",
-                    fontSize: "14px",
-                  }}
-                >
-                  <option value="">Select...</option>
-                  <option value="Yes">Yes</option>
-                  <option value="No">No</option>
-                  <option value="Maybe">Maybe</option>
-                </select>
-              </div>
-            </div>
+            )}
 
             {/* Additional Information Section */}
-            <div style={{ marginBottom: "24px" }}>
-              <h3 style={{ margin: "0 0 12px 0", fontSize: "16px", fontWeight: "600", color: "#374151" }}>
-                Additional Information
-              </h3>
+            {showAllFields && (
+              <div style={{ marginBottom: "24px" }}>
+                <h3 style={{ margin: "0 0 12px 0", fontSize: "16px", fontWeight: "600", color: "#374151" }}>
+                  Additional Information
+                </h3>
 
-              {/* Tags */}
-              <div style={{ marginBottom: "16px" }}>
-                <label
-                  style={{
-                    display: "block",
-                    marginBottom: "4px",
-                    fontSize: "14px",
-                    fontWeight: "500",
-                    color: "#374151",
-                  }}
-                >
-                  Tags
-                </label>
-                <input
-                  type="text"
-                  value={formData.tags || ""}
-                  onChange={(e) => handleChange("tags", e.target.value)}
-                  style={{
-                    width: "100%",
-                    padding: "8px 12px",
-                    border: "1px solid #d1d5db",
-                    borderRadius: "4px",
-                    fontSize: "14px",
-                  }}
-                  placeholder="Comma-separated tags"
-                />
-              </div>
+                {/* Tags */}
+                <div style={{ marginBottom: "16px" }}>
+                  <label
+                    style={{
+                      display: "block",
+                      marginBottom: "4px",
+                      fontSize: "14px",
+                      fontWeight: "500",
+                      color: "#374151",
+                    }}
+                  >
+                    Tags
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.tags || ""}
+                    onChange={(e) => handleChange("tags", e.target.value)}
+                    style={{
+                      width: "100%",
+                      padding: "8px 12px",
+                      border: "1px solid #d1d5db",
+                      borderRadius: "4px",
+                      fontSize: "14px",
+                    }}
+                    placeholder="Comma-separated tags"
+                  />
+                </div>
 
-              {/* Comments */}
-              <div style={{ marginBottom: "16px" }}>
-                <label
-                  style={{
-                    display: "block",
-                    marginBottom: "4px",
-                    fontSize: "14px",
-                    fontWeight: "500",
-                    color: "#374151",
-                  }}
-                >
-                  Comments
-                </label>
-                <textarea
-                  value={formData.comments || ""}
-                  onChange={(e) => handleChange("comments", e.target.value)}
-                  rows={3}
-                  style={{
-                    width: "100%",
-                    padding: "8px 12px",
-                    border: "1px solid #d1d5db",
-                    borderRadius: "4px",
-                    fontSize: "14px",
-                    resize: "vertical",
-                  }}
-                  placeholder="Additional comments or notes"
-                />
+                {/* Comments */}
+                <div style={{ marginBottom: "16px" }}>
+                  <label
+                    style={{
+                      display: "block",
+                      marginBottom: "4px",
+                      fontSize: "14px",
+                      fontWeight: "500",
+                      color: "#374151",
+                    }}
+                  >
+                    Comments
+                  </label>
+                  <textarea
+                    value={formData.comments || ""}
+                    onChange={(e) => handleChange("comments", e.target.value)}
+                    rows={3}
+                    style={{
+                      width: "100%",
+                      padding: "8px 12px",
+                      border: "1px solid #d1d5db",
+                      borderRadius: "4px",
+                      fontSize: "14px",
+                      resize: "vertical",
+                    }}
+                    placeholder="Additional comments or notes"
+                  />
+                </div>
               </div>
-            </div>
+            )}
           </div>
 
           {/* Footer Buttons */}
@@ -732,41 +739,55 @@ const ClipDialog: React.FC<ClipDialogProps> = ({
               borderTop: "1px solid #e5e7eb",
               backgroundColor: "#f9fafb",
               display: "flex",
-              justifyContent: "flex-end",
+              justifyContent: "space-between",
+              alignItems: "center",
               gap: "12px",
             }}
           >
-            <button
-              type="button"
-              onClick={onCancel}
-              style={{
-                padding: "8px 16px",
-                border: "1px solid #d1d5db",
-                borderRadius: "4px",
-                backgroundColor: "white",
-                color: "#374151",
-                cursor: "pointer",
-                fontSize: "14px",
-                fontWeight: "500",
-              }}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              style={{
-                padding: "8px 16px",
-                border: "none",
-                borderRadius: "4px",
-                backgroundColor: "#2563eb",
-                color: "white",
-                cursor: "pointer",
-                fontSize: "14px",
-                fontWeight: "500",
-              }}
-            >
-              {clip ? "Update Clip" : "Add Clip"}
-            </button>
+            {/* Show All Fields Toggle */}
+            <label style={{ display: "flex", alignItems: "center", cursor: "pointer" }}>
+              <input
+                type="checkbox"
+                checked={showAllFields}
+                onChange={(e) => setShowAllFields(e.target.checked)}
+                style={{ marginRight: "8px", width: "16px", height: "16px", cursor: "pointer" }}
+              />
+              <span style={{ fontSize: "14px", fontWeight: "500", color: "#374151" }}>Show all fields</span>
+            </label>
+
+            <div style={{ display: "flex", gap: "12px" }}>
+              <button
+                type="button"
+                onClick={onCancel}
+                style={{
+                  padding: "8px 16px",
+                  border: "1px solid #d1d5db",
+                  borderRadius: "4px",
+                  backgroundColor: "white",
+                  color: "#374151",
+                  cursor: "pointer",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="submit"
+                style={{
+                  padding: "8px 16px",
+                  border: "none",
+                  borderRadius: "4px",
+                  backgroundColor: "#2563eb",
+                  color: "white",
+                  cursor: "pointer",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                }}
+              >
+                {clip ? "Update Clip" : "Add Clip"}
+              </button>
+            </div>
           </div>
         </form>
       </div>
